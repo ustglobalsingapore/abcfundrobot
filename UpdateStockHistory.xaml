@@ -1,6 +1,6 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="UpdateStockHistory" mva:VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="624,801" sap2010:WorkflowViewState.IdRef="UpdateStockHistory_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="UpdateStockHistory" mva:VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="756,801" sap2010:WorkflowViewState.IdRef="UpdateStockHistory_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:udad="clr-namespace:UiPathTeam.Dates.Activities.Datetime;assembly=UiPathTeam.Dates.Activities" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <TextExpression.NamespacesForImplementation>
-    <scg:List x:TypeArguments="x:String" Capacity="48">
+    <scg:List x:TypeArguments="x:String" Capacity="50">
       <x:String>System.Activities</x:String>
       <x:String>System.Activities.Statements</x:String>
       <x:String>System.Activities.Expressions</x:String>
@@ -26,10 +26,11 @@
       <x:String>UiPath.Excel</x:String>
       <x:String>UiPath.Database</x:String>
       <x:String>System.Globalization</x:String>
+      <x:String>Microsoft.VisualBasic.CompilerServices</x:String>
     </scg:List>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
-    <scg:List x:TypeArguments="AssemblyReference" Capacity="23">
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="25">
       <AssemblyReference>System.Activities</AssemblyReference>
       <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
       <AssemblyReference>mscorlib</AssemblyReference>
@@ -53,6 +54,8 @@
       <AssemblyReference>UiPath.System.Activities.Design</AssemblyReference>
       <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
       <AssemblyReference>UiPath.Database</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
     </scg:List>
   </TextExpression.ReferencesForImplementation>
   <Flowchart DisplayName="UpdateStockHistory" sap:VirtualizedContainerService.HintSize="634,636" sap2010:WorkflowViewState.IdRef="Flowchart_1">
@@ -242,10 +245,13 @@
                   <av:Size x:Key="ShapeSize">200,258</av:Size>
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
-              <Sequence sap2010:Annotation.AnnotationText="Pre: Database Package must be installed&#xA;&#xA;1. Check from the last records of tempDataTable from csv reading against the sql database.&#xA;2. if records don't exist in db, then prepare to add these new records.&#xA;3. * Bonus. Can update the permanant excel as well." DisplayName="Check against Database" sap:VirtualizedContainerService.HintSize="526,1849" sap2010:WorkflowViewState.IdRef="Sequence_8">
+              <Sequence sap2010:Annotation.AnnotationText="Pre: Database Package must be installed&#xA;&#xA;1. Check from the last records of tempDataTable from csv reading against the sql database.&#xA;2. if records don't exist in db, then prepare to add these new records.&#xA;3. * Bonus. Can update the permanant excel as well." DisplayName="Check against Database" sap:VirtualizedContainerService.HintSize="791,3035" sap2010:WorkflowViewState.IdRef="Sequence_8">
                 <Sequence.Variables>
                   <Variable x:TypeArguments="ui:DatabaseConnection" Name="dbConn_Local" />
                   <Variable x:TypeArguments="sd:DataTable" Name="dbResultDT" />
+                  <Variable x:TypeArguments="s:DateTime" Name="dbLatestDate" />
+                  <Variable x:TypeArguments="x:Double" Name="double_daysDiff" />
+                  <Variable x:TypeArguments="sd:DataTable" Name="tempHistoricalDTFiltered" />
                 </Sequence.Variables>
                 <sap:WorkflowViewStateService.ViewState>
                   <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -253,9 +259,9 @@
                     <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
                   </scg:Dictionary>
                 </sap:WorkflowViewStateService.ViewState>
-                <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="484,61" sap2010:WorkflowViewState.IdRef="WriteLine_11" Text="Check against Database..." />
-                <ui:DatabaseConnect DatabaseConnection="[dbConn_Local]" DisplayName="Connect Local" sap:VirtualizedContainerService.HintSize="484,59" sap2010:WorkflowViewState.IdRef="DatabaseConnect_1" ProviderName="System.Data.SqlClient" ConnectionString="Server=DESKTOP-483N209\SQLEXPRESS;Database=abcdb;persist security info=True;Integrated Security=SSPI;" />
-                <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="484,51" sap2010:WorkflowViewState.IdRef="CommentOut_2">
+                <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="749,61" sap2010:WorkflowViewState.IdRef="WriteLine_11" Text="Check against Database..." />
+                <ui:DatabaseConnect DatabaseConnection="[dbConn_Local]" DisplayName="Connect Local" sap:VirtualizedContainerService.HintSize="749,59" sap2010:WorkflowViewState.IdRef="DatabaseConnect_1" ProviderName="System.Data.SqlClient" ConnectionString="Server=DESKTOP-483N209\SQLEXPRESS;Database=abcdb;persist security info=True;Integrated Security=SSPI;" />
+                <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="749,51" sap2010:WorkflowViewState.IdRef="CommentOut_2">
                   <ui:CommentOut.Body>
                     <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="376,151" sap2010:WorkflowViewState.IdRef="Sequence_9">
                       <sap:WorkflowViewStateService.ViewState>
@@ -273,7 +279,7 @@
                     </scg:Dictionary>
                   </sap:WorkflowViewStateService.ViewState>
                 </ui:CommentOut>
-                <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="Sample &#xA;&quot;select * FROM [salesorder].[dbo].[invoice] order by InvoiceId asc &quot;" CommandType="Text" DataTable="[dbResultDT]" DisplayName="Execute Query" ExistingDbConnection="[dbConn_Local]" sap:VirtualizedContainerService.HintSize="484,145" sap2010:WorkflowViewState.IdRef="ExecuteQuery_1" Sql="[&quot;Select * from [Historical] where stockid='&quot;+stockId+&quot;'&quot;]">
+                <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="Sample &#xA;&quot;select * FROM [salesorder].[dbo].[invoice] order by InvoiceId asc &quot;" CommandType="Text" DataTable="[dbResultDT]" DisplayName="Execute get last record of the stock historical" ExistingDbConnection="[dbConn_Local]" sap:VirtualizedContainerService.HintSize="749,145" sap2010:WorkflowViewState.IdRef="ExecuteQuery_1" Sql="[&quot;SELECT TOP 1 * FROM [Historical] WHERE StockId='&quot;+stockId+&quot;' ORDER BY TradeDate DESC&quot;]">
                   <ui:ExecuteQuery.Parameters>
                     <scg:Dictionary x:TypeArguments="x:String, Argument" />
                   </ui:ExecuteQuery.Parameters>
@@ -283,23 +289,22 @@
                     </scg:Dictionary>
                   </sap:WorkflowViewStateService.ViewState>
                 </ui:ExecuteQuery>
-                <If Condition="[dbResultDT.Rows.Count &gt; 0]" sap:VirtualizedContainerService.HintSize="484,301" sap2010:WorkflowViewState.IdRef="If_2">
+                <If Condition="[dbResultDT.Rows.Count &gt; 0]" DisplayName="If have record in DB" sap:VirtualizedContainerService.HintSize="749,51" sap2010:WorkflowViewState.IdRef="If_2">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
                   <If.Then>
-                    <Sequence sap:VirtualizedContainerService.HintSize="272,153" sap2010:WorkflowViewState.IdRef="Sequence_11">
-                      <sap:WorkflowViewStateService.ViewState>
-                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                        </scg:Dictionary>
-                      </sap:WorkflowViewStateService.ViewState>
-                      <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="230,61" sap2010:WorkflowViewState.IdRef="WriteLine_13" Text="[&quot;DB has &quot; +dbResultDT.Rows.Count.ToString + &quot; records&quot;]" />
-                    </Sequence>
+                    <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="230,61" sap2010:WorkflowViewState.IdRef="WriteLine_28" Text="[&quot;DB last record is: &quot; + dbResultDT.Rows(0)(0).ToString + &quot; : &quot;  + dbResultDT.Rows(0)(1).ToString + &quot; : &quot;  + dbResultDT.Rows(0)(2).ToString + &quot; : &quot;]" />
                   </If.Then>
                 </If>
-                <Sequence sap2010:Annotation.AnnotationText="1. Check from the last record inside newTempHistoricalDT to the older records. (use--)&#xD;&#xA;2. Check against dbResultDT if record date is inside. &#xD;&#xA;3. If No, save it to a newHistoricalDT. If yes, means records have updated to the latest date.&#xD;&#xA;4. Save the newHistoricalDT into the database." DisplayName="Sequence  Compare csv and db" sap:VirtualizedContainerService.HintSize="484,791" sap2010:WorkflowViewState.IdRef="Sequence_12">
+                <ui:SortDataTable ColumnIndex="{x:Null}" DataColumn="{x:Null}" ColumnName="Date" DataTable="[tempHistoricalDT]" DisplayName="Sort DT by Date DESC" sap:VirtualizedContainerService.HintSize="749,22" sap2010:WorkflowViewState.IdRef="SortDataTable_1" Order="Decending" OutputDataTable="[tempHistoricalDT]" SortOrder="Descending" />
+                <Sequence sap2010:Annotation.AnnotationText="1. Check from the last record inside newTempHistoricalDT to the older records. (use--)&#xA;2. Check against dbResultDT if record date is inside. &#xA;3. If No, save it to a newHistoricalDT. If yes, means records have updated to the latest date.&#xA;4. Save the newHistoricalDT into the database." DisplayName="Sequence  Compare csv and db" sap:VirtualizedContainerService.HintSize="749,1519" sap2010:WorkflowViewState.IdRef="Sequence_12">
                   <Sequence.Variables>
-                    <Variable x:TypeArguments="x:Int32" Name="lastIndex" />
-                    <Variable x:TypeArguments="x:Boolean" Name="recordMatches" />
-                    <Variable x:TypeArguments="sd:DataTable" Name="tempHistoricalDTSorted" />
+                    <Variable x:TypeArguments="x:Int32" Name="tempCounterIndex" />
+                    <Variable x:TypeArguments="x:Boolean" Name="foundDateMatches" />
                   </Sequence.Variables>
                   <sap:WorkflowViewStateService.ViewState>
                     <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -307,42 +312,29 @@
                       <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
                     </scg:Dictionary>
                   </sap:WorkflowViewStateService.ViewState>
-                  <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="322,61" sap2010:WorkflowViewState.IdRef="WriteLine_15" Text="Comparing CSV and DB..." />
-                  <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="322,51" sap2010:WorkflowViewState.IdRef="CommentOut_3">
+                  <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="707,61" sap2010:WorkflowViewState.IdRef="WriteLine_15" Text="Comparing CSV and DB..." />
+                  <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="707,51" sap2010:WorkflowViewState.IdRef="CommentOut_3">
                     <ui:CommentOut.Body>
-                      <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="200,66" sap2010:WorkflowViewState.IdRef="Sequence_18">
+                      <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="366,589" sap2010:WorkflowViewState.IdRef="Sequence_18">
                         <sap:WorkflowViewStateService.ViewState>
                           <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                             <x:Boolean x:Key="IsPinned">False</x:Boolean>
                           </scg:Dictionary>
                         </sap:WorkflowViewStateService.ViewState>
-                        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="230,61" sap2010:WorkflowViewState.IdRef="WriteLine_23" Text="[&quot;Sample Date: &quot; + DateTime.ParseExact(&quot;7/5/2019&quot;, &quot;d/M/yyyy&quot;, &#xA;System.Globalization.CultureInfo.InvariantCulture).ToString]" />
-                        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="230,61" sap2010:WorkflowViewState.IdRef="WriteLine_24" Text="[&quot;Sample Date2: &quot; + DateTime.ParseExact(&quot;2012-07-05&quot;, &quot;yyyy-MM-dd&quot;, System.Globalization.CultureInfo.InvariantCulture).ToString]" />
-                        <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[tempHistoricalDT]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="230,51" sap2010:WorkflowViewState.IdRef="ForEachRow_5">
-                          <ui:ForEachRow.Body>
-                            <ActivityAction x:TypeArguments="sd:DataRow">
-                              <ActivityAction.Argument>
-                                <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
-                              </ActivityAction.Argument>
-                              <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="272,254" sap2010:WorkflowViewState.IdRef="Sequence_17">
-                                <sap:WorkflowViewStateService.ViewState>
-                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                                  </scg:Dictionary>
-                                </sap:WorkflowViewStateService.ViewState>
-                                <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="230,61" sap2010:WorkflowViewState.IdRef="WriteLine_25" Text="[row.Item(&quot;Date&quot;).ToString]" />
-                                <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="230,61" sap2010:WorkflowViewState.IdRef="WriteLine_26" Text="[DateTime.ParseExact(row.Item(&quot;Date&quot;).ToString, &quot;yyyy-M-d&quot;, System.Globalization.CultureInfo.InvariantCulture).ToString]" />
-                              </Sequence>
-                            </ActivityAction>
-                          </ui:ForEachRow.Body>
-                          <sap:WorkflowViewStateService.ViewState>
-                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
-                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
-                            </scg:Dictionary>
-                          </sap:WorkflowViewStateService.ViewState>
-                        </ui:ForEachRow>
+                        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="324,61" sap2010:WorkflowViewState.IdRef="WriteLine_34" Text="[&quot;DB before convert: &quot;+ dbResultDT.Rows(0)(2).ToString + Environment.NewLine + &#xA;&quot;DB after convert: &quot; + DateTime.ParseExact(dbResultDT.Rows(0)(2).ToString, &quot;d/M/yyyy hh:mm:ss&quot;, System.Globalization.CultureInfo.InvariantCulture).ToShortDateString]" />
+                        <udad:CompareDates Result="{x:Null}" CheckDay="True" CheckHours="False" CheckMinutes="False" CheckMonth="False" CheckSecondes="False" CheckYear="False" Date1DT="[DateTime.ParseExact(dbResultDT.Rows(0)(2).ToString, &quot;M/d/yyyy hh:mm:ss&quot;, System.Globalization.CultureInfo.InvariantCulture)]" Date2DT="[DateTime.ParseExact(&quot;7/7/2020 00:00:00&quot;, &quot;M/d/yyyy hh:mm:ss&quot;, System.Globalization.CultureInfo.InvariantCulture)]" DateDifference="[double_daysDiff]" DisplayName="Compare dates" sap:VirtualizedContainerService.HintSize="324,90" sap2010:WorkflowViewState.IdRef="CompareDates_4" OutputDateDifferenceUnits="Days" />
+                        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="324,61" sap2010:WorkflowViewState.IdRef="WriteLine_24" Text="[&quot;Sample Date2: &quot; + DateTime.ParseExact(&quot;2012-07-05&quot;, &quot;yyyy-MM-dd&quot;, System.Globalization.CultureInfo.InvariantCulture).ToString]" />
+                        <Assign sap:VirtualizedContainerService.HintSize="324,64" sap2010:WorkflowViewState.IdRef="Assign_7">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="sd:DataTable">[tempHistoricalDTSorted]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="sd:DataTable" xml:space="preserve">[(From row In tempHistoricalDT Order By DateTime.ParseExact(row.Item("Date").ToString, "yyyy-M-d", 
+System.Globalization.CultureInfo.InvariantCulture) Descending Select row).CopyToDataTable]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="324,61" sap2010:WorkflowViewState.IdRef="WriteLine_32" Text="[&quot;Table before convert: &quot; + tempHistoricalDT.Rows(0)(0).ToString + Environment.NewLine+&#xD;&#xA;&quot;Table after convert: &quot; + DateTime.ParseExact(tempHistoricalDT.Rows(0)(0).ToString, &quot;yyyy-M-d&quot;, System.Globalization.CultureInfo.InvariantCulture).ToShortDateString]" />
                       </Sequence>
                     </ui:CommentOut.Body>
                     <sap:WorkflowViewStateService.ViewState>
@@ -352,34 +344,108 @@
                       </scg:Dictionary>
                     </sap:WorkflowViewStateService.ViewState>
                   </ui:CommentOut>
-                  <Assign sap:VirtualizedContainerService.HintSize="322,64" sap2010:WorkflowViewState.IdRef="Assign_7">
+                  <Assign sap:VirtualizedContainerService.HintSize="707,60" sap2010:WorkflowViewState.IdRef="Assign_11">
                     <Assign.To>
-                      <OutArgument x:TypeArguments="sd:DataTable">[tempHistoricalDTSorted]</OutArgument>
+                      <OutArgument x:TypeArguments="x:Int32">[tempCounterIndex]</OutArgument>
                     </Assign.To>
                     <Assign.Value>
-                      <InArgument x:TypeArguments="sd:DataTable" xml:space="preserve">[(From row In tempHistoricalDT Order By DateTime.ParseExact(row.Item("Date").ToString, "yyyy-M-d", 
-System.Globalization.CultureInfo.InvariantCulture) Descending Select row).CopyToDataTable]</InArgument>
+                      <InArgument x:TypeArguments="x:Int32">0</InArgument>
                     </Assign.Value>
                   </Assign>
-                  <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[tempHistoricalDTSorted]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="322,301" sap2010:WorkflowViewState.IdRef="ForEachRow_2">
-                    <ui:ForEachRow.Body>
-                      <ActivityAction x:TypeArguments="sd:DataRow">
-                        <ActivityAction.Argument>
-                          <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
-                        </ActivityAction.Argument>
-                        <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="272,153" sap2010:WorkflowViewState.IdRef="Sequence_14">
+                  <Assign DisplayName="Clone the structure of tempHistoricalDT" sap:VirtualizedContainerService.HintSize="707,60" sap2010:WorkflowViewState.IdRef="Assign_13">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="sd:DataTable">[tempHistoricalDTFiltered]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="sd:DataTable">[tempHistoricalDT.Clone()]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <ui:InterruptibleDoWhile sap2010:Annotation.AnnotationText="Check if each tempHistoricalDT is newer than database date." DisplayName="Do While" sap:VirtualizedContainerService.HintSize="707,963" sap2010:WorkflowViewState.IdRef="InterruptibleDoWhile_1">
+                    <ui:InterruptibleDoWhile.Body>
+                      <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="671,767" sap2010:WorkflowViewState.IdRef="Sequence_20">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <udad:CompareDates Result="{x:Null}" CheckDay="True" CheckHours="False" CheckMinutes="False" CheckMonth="False" CheckSecondes="False" CheckYear="False" Date1DT="[DateTime.ParseExact(dbResultDT.Rows(0)(2).ToString, &quot;M/d/yyyy hh:mm:ss&quot;, System.Globalization.CultureInfo.InvariantCulture)]" Date2DT="[DateTime.ParseExact(tempHistoricalDT.Rows(tempCounterIndex)(0).ToString, &quot;yyyy-M-d&quot;, System.Globalization.CultureInfo.InvariantCulture)]" DateDifference="[double_daysDiff]" DisplayName="Compare dates" sap:VirtualizedContainerService.HintSize="629,90" sap2010:WorkflowViewState.IdRef="CompareDates_3" OutputDateDifferenceUnits="Days" />
+                        <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="629,51" sap2010:WorkflowViewState.IdRef="CommentOut_4">
+                          <ui:CommentOut.Body>
+                            <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="272,153" sap2010:WorkflowViewState.IdRef="Sequence_23">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="230,61" sap2010:WorkflowViewState.IdRef="WriteLine_31" Text="[&quot;Compare &quot;+tempCounterIndex.ToString+&quot; db(&quot;+ DateTime.ParseExact(dbResultDT.Rows(0)(2).ToString, &quot;M/d/yyyy hh:mm:ss&quot;, System.Globalization.CultureInfo.InvariantCulture).ToShortDateString + &quot;): &quot; +&#xD;&#xA;&quot; vs &quot; + DateTime.ParseExact(tempHistoricalDT.Rows(tempCounterIndex)(0).ToString, &quot;yyyy-M-d&quot;, System.Globalization.CultureInfo.InvariantCulture).ToShortDateString + Environment.NewLine + &#xD;&#xA;&quot;Day Diff = &quot; + double_daysDiff.ToString]" />
+                            </Sequence>
+                          </ui:CommentOut.Body>
                           <sap:WorkflowViewStateService.ViewState>
                             <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
                             </scg:Dictionary>
                           </sap:WorkflowViewStateService.ViewState>
-                          <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="230,61" sap2010:WorkflowViewState.IdRef="WriteLine_16" Text="[&quot;Row: &quot;+row(0).ToString +&quot; : &quot; + row(1).ToString + &quot; : &quot; + row(2).ToString +&quot; : &quot;+row(3).ToString+&quot; : &quot;+row(4).ToString]" />
-                        </Sequence>
-                      </ActivityAction>
-                    </ui:ForEachRow.Body>
-                  </ui:ForEachRow>
+                        </ui:CommentOut>
+                        <If Condition="[double_daysDiff &gt; 0]" DisplayName="If daysDiff &gt; 0 then add to the tempHistoricalDTFiltered" sap:VirtualizedContainerService.HintSize="629,354" sap2010:WorkflowViewState.IdRef="If_3">
+                          <If.Then>
+                            <If Condition="[tempHistoricalDT.Rows(tempCounterIndex)(2).ToString = &quot;null&quot;]" DisplayName="If column has null value, do nothing" sap:VirtualizedContainerService.HintSize="484,207" sap2010:WorkflowViewState.IdRef="If_5">
+                              <If.Else>
+                                <ui:AddDataRow DataRow="{x:Null}" ArrayRow="[tempHistoricalDT.Rows(tempCounterIndex).ItemArray]" DataTable="[tempHistoricalDTFiltered]" DisplayName="Add Data Row" sap:VirtualizedContainerService.HintSize="200,22" sap2010:WorkflowViewState.IdRef="AddDataRow_2" />
+                              </If.Else>
+                            </If>
+                          </If.Then>
+                        </If>
+                        <Assign sap:VirtualizedContainerService.HintSize="629,60" sap2010:WorkflowViewState.IdRef="Assign_12">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="x:Int32">[tempCounterIndex]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="x:Int32">[tempCounterIndex+1]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                      </Sequence>
+                    </ui:InterruptibleDoWhile.Body>
+                    <ui:InterruptibleDoWhile.Condition>
+                      <mva:VisualBasicValue x:TypeArguments="x:Boolean" ExpressionText="double_daysDiff &gt; 0" sap2010:WorkflowViewState.IdRef="VisualBasicValue`1_3" />
+                    </ui:InterruptibleDoWhile.Condition>
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                  </ui:InterruptibleDoWhile>
                 </Sequence>
-                <ui:DatabaseDisconnect DatabaseConnection="[dbConn_Local]" DisplayName="Disconnect" sap:VirtualizedContainerService.HintSize="484,22" sap2010:WorkflowViewState.IdRef="DatabaseDisconnect_1" />
+                <ui:SortDataTable ColumnIndex="{x:Null}" DataColumn="{x:Null}" ColumnName="Date" DataTable="[tempHistoricalDTFiltered]" DisplayName="Sort DTFiltered by Date ASC" sap:VirtualizedContainerService.HintSize="749,22" sap2010:WorkflowViewState.IdRef="SortDataTable_2" Order="Ascending" OutputDataTable="[tempHistoricalDTFiltered]" SortOrder="Ascending" />
+                <Sequence DisplayName="Add new data into SQL" sap:VirtualizedContainerService.HintSize="749,544" sap2010:WorkflowViewState.IdRef="Sequence_21">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <If Condition="[tempHistoricalDTFiltered.Rows.Count &gt; 0]" sap:VirtualizedContainerService.HintSize="484,452" sap2010:WorkflowViewState.IdRef="If_4">
+                    <If.Then>
+                      <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[tempHistoricalDTFiltered]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="322,304" sap2010:WorkflowViewState.IdRef="ForEachRow_6">
+                        <ui:ForEachRow.Body>
+                          <ActivityAction x:TypeArguments="sd:DataRow">
+                            <ActivityAction.Argument>
+                              <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+                            </ActivityAction.Argument>
+                            <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="272,156" sap2010:WorkflowViewState.IdRef="Sequence_22">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="230,64" sap2010:WorkflowViewState.IdRef="WriteLine_36" Text="[&quot;Saving item no: &quot; + tempHistoricalDTFiltered.Rows.IndexOf(row).ToString + &quot;; &quot; + &#xD;&#xA;row(0).ToString + &quot;, &quot; + &#xD;&#xA;row(1).ToString + &quot;, &quot; + &#xD;&#xA;row(2).ToString + &quot;, &quot; + &#xD;&#xA;row(3).ToString + &quot;, &quot; + &#xD;&#xA;row(4).ToString + &quot;, &quot; + &#xD;&#xA;row(5).ToString + &quot;.&quot;]" />
+                            </Sequence>
+                          </ActivityAction>
+                        </ui:ForEachRow.Body>
+                      </ui:ForEachRow>
+                    </If.Then>
+                  </If>
+                </Sequence>
+                <ui:DatabaseDisconnect DatabaseConnection="[dbConn_Local]" DisplayName="Disconnect" sap:VirtualizedContainerService.HintSize="749,22" sap2010:WorkflowViewState.IdRef="DatabaseDisconnect_1" />
               </Sequence>
             </FlowStep>
           </FlowStep.Next>
