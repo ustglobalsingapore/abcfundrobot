@@ -245,9 +245,9 @@
                   <av:Size x:Key="ShapeSize">200,258</av:Size>
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
-              <Sequence sap2010:Annotation.AnnotationText="Pre: Database Package must be installed&#xA;&#xA;1. Check from the last records of tempDataTable from csv reading against the sql database.&#xA;2. if records don't exist in db, then prepare to add these new records.&#xA;3. * Bonus. Can update the permanant excel as well." DisplayName="Check against Database" sap:VirtualizedContainerService.HintSize="791,3035" sap2010:WorkflowViewState.IdRef="Sequence_8">
+              <Sequence sap2010:Annotation.AnnotationText="Pre: Database Package must be installed&#xA;&#xA;1. Check from the last records of tempDataTable from csv reading against the sql database.&#xA;2. if records don't exist in db, then prepare to add these new records.&#xA;3. * Bonus. Can update the permanant excel as well." DisplayName="Check against Database" sap:VirtualizedContainerService.HintSize="791,3163" sap2010:WorkflowViewState.IdRef="Sequence_8">
                 <Sequence.Variables>
-                  <Variable x:TypeArguments="ui:DatabaseConnection" Name="dbConn_Local" />
+                  <Variable x:TypeArguments="ui:DatabaseConnection" Name="dbConn" />
                   <Variable x:TypeArguments="sd:DataTable" Name="dbResultDT" />
                   <Variable x:TypeArguments="x:Double" Name="double_daysDiff" />
                   <Variable x:TypeArguments="sd:DataTable" Name="tempHistoricalDTFiltered" />
@@ -259,7 +259,7 @@
                   </scg:Dictionary>
                 </sap:WorkflowViewStateService.ViewState>
                 <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="749,61" sap2010:WorkflowViewState.IdRef="WriteLine_11" Text="Check against Database..." />
-                <ui:DatabaseConnect DatabaseConnection="[dbConn_Local]" DisplayName="Connect Local" sap:VirtualizedContainerService.HintSize="749,59" sap2010:WorkflowViewState.IdRef="DatabaseConnect_1" ProviderName="System.Data.SqlClient" ConnectionString="Server=DESKTOP-483N209\SQLEXPRESS;Database=abcdb;persist security info=True;Integrated Security=SSPI;" />
+                <ui:DatabaseConnect DatabaseConnection="[dbConn]" DisplayName="Connect Local" sap:VirtualizedContainerService.HintSize="749,59" sap2010:WorkflowViewState.IdRef="DatabaseConnect_1" ProviderName="System.Data.SqlClient" ConnectionString="Server=DESKTOP-483N209\SQLEXPRESS;Database=abcdb;persist security info=True;Integrated Security=SSPI;" />
                 <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="749,51" sap2010:WorkflowViewState.IdRef="CommentOut_2">
                   <ui:CommentOut.Body>
                     <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="376,151" sap2010:WorkflowViewState.IdRef="Sequence_9">
@@ -268,7 +268,7 @@
                           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                         </scg:Dictionary>
                       </sap:WorkflowViewStateService.ViewState>
-                      <ui:DatabaseConnect DatabaseConnection="[dbConn_Local]" DisplayName="Connect Azure Sql" sap:VirtualizedContainerService.HintSize="334,59" sap2010:WorkflowViewState.IdRef="DatabaseConnect_2" ProviderName="System.Data.SqlClient" ConnectionString="Server=tcp:ust.database.windows.net,1433;Initial Catalog=abcfunddb;Persist Security Info=False;User ID=jsazure;Password=USTpass@999;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" />
+                      <ui:DatabaseConnect DatabaseConnection="[dbConn]" DisplayName="Connect Azure Sql" sap:VirtualizedContainerService.HintSize="334,59" sap2010:WorkflowViewState.IdRef="DatabaseConnect_2" ProviderName="System.Data.SqlClient" ConnectionString="Server=tcp:ust.database.windows.net,1433;Initial Catalog=abcfunddb;Persist Security Info=False;User ID=jsazure;Password=USTpass@999;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" />
                     </Sequence>
                   </ui:CommentOut.Body>
                   <sap:WorkflowViewStateService.ViewState>
@@ -278,7 +278,7 @@
                     </scg:Dictionary>
                   </sap:WorkflowViewStateService.ViewState>
                 </ui:CommentOut>
-                <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="Sample &#xA;&quot;select * FROM [salesorder].[dbo].[invoice] order by InvoiceId asc &quot;" CommandType="Text" DataTable="[dbResultDT]" DisplayName="Execute get last record of the stock historical" ExistingDbConnection="[dbConn_Local]" sap:VirtualizedContainerService.HintSize="749,145" sap2010:WorkflowViewState.IdRef="ExecuteQuery_1" Sql="[&quot;SELECT TOP 1 * FROM [Historical] WHERE StockId='&quot;+stockId+&quot;' ORDER BY TradeDate DESC&quot;]">
+                <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="Sample &#xA;&quot;select * FROM [salesorder].[dbo].[invoice] order by InvoiceId asc &quot;" CommandType="Text" DataTable="[dbResultDT]" DisplayName="Execute get last record of the stock historical" ExistingDbConnection="[dbConn]" sap:VirtualizedContainerService.HintSize="749,145" sap2010:WorkflowViewState.IdRef="ExecuteQuery_1" Sql="[&quot;SELECT TOP 1 * FROM [Historical] WHERE StockId='&quot;+stockId+&quot;' ORDER BY TradeDate DESC&quot;]">
                   <ui:ExecuteQuery.Parameters>
                     <scg:Dictionary x:TypeArguments="x:String, Argument" />
                   </ui:ExecuteQuery.Parameters>
@@ -416,27 +416,32 @@ System.Globalization.CultureInfo.InvariantCulture) Descending Select row).CopyTo
                   </ui:InterruptibleDoWhile>
                 </Sequence>
                 <ui:SortDataTable ColumnIndex="{x:Null}" DataColumn="{x:Null}" ColumnName="Date" DataTable="[tempHistoricalDTFiltered]" DisplayName="Sort DTFiltered by Date ASC" sap:VirtualizedContainerService.HintSize="749,22" sap2010:WorkflowViewState.IdRef="SortDataTable_2" Order="Ascending" OutputDataTable="[tempHistoricalDTFiltered]" SortOrder="Ascending" />
-                <Sequence DisplayName="Add new data into SQL" sap:VirtualizedContainerService.HintSize="749,544" sap2010:WorkflowViewState.IdRef="Sequence_21">
+                <Sequence DisplayName="Add new data into SQL" sap:VirtualizedContainerService.HintSize="749,672" sap2010:WorkflowViewState.IdRef="Sequence_21">
                   <sap:WorkflowViewStateService.ViewState>
                     <scg:Dictionary x:TypeArguments="x:String, x:Object">
                       <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                     </scg:Dictionary>
                   </sap:WorkflowViewStateService.ViewState>
-                  <If Condition="[tempHistoricalDTFiltered.Rows.Count &gt; 0]" sap:VirtualizedContainerService.HintSize="484,452" sap2010:WorkflowViewState.IdRef="If_4">
+                  <If Condition="[tempHistoricalDTFiltered.Rows.Count &gt; 0]" sap:VirtualizedContainerService.HintSize="571,580" sap2010:WorkflowViewState.IdRef="If_4">
                     <If.Then>
-                      <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[tempHistoricalDTFiltered]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="322,304" sap2010:WorkflowViewState.IdRef="ForEachRow_6">
+                      <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[tempHistoricalDTFiltered]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="426,432" sap2010:WorkflowViewState.IdRef="ForEachRow_6">
                         <ui:ForEachRow.Body>
                           <ActivityAction x:TypeArguments="sd:DataRow">
                             <ActivityAction.Argument>
                               <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
                             </ActivityAction.Argument>
-                            <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="272,156" sap2010:WorkflowViewState.IdRef="Sequence_22">
+                            <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="376,284" sap2010:WorkflowViewState.IdRef="Sequence_22">
                               <sap:WorkflowViewStateService.ViewState>
                                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                                 </scg:Dictionary>
                               </sap:WorkflowViewStateService.ViewState>
-                              <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="230,64" sap2010:WorkflowViewState.IdRef="WriteLine_36" Text="[&quot;Saving item no: &quot; + tempHistoricalDTFiltered.Rows.IndexOf(row).ToString + &quot;; &quot; + &#xD;&#xA;row(0).ToString + &quot;, &quot; + &#xD;&#xA;row(1).ToString + &quot;, &quot; + &#xD;&#xA;row(2).ToString + &quot;, &quot; + &#xD;&#xA;row(3).ToString + &quot;, &quot; + &#xD;&#xA;row(4).ToString + &quot;, &quot; + &#xD;&#xA;row(5).ToString + &quot;.&quot;]" />
+                              <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="334,64" sap2010:WorkflowViewState.IdRef="WriteLine_36" Text="[&quot;Saving item no: &quot; + tempHistoricalDTFiltered.Rows.IndexOf(row).ToString + &quot;; &quot; + &#xD;&#xA;row(0).ToString + &quot;, &quot; + &#xD;&#xA;row(1).ToString + &quot;, &quot; + &#xD;&#xA;row(2).ToString + &quot;, &quot; + &#xD;&#xA;row(3).ToString + &quot;, &quot; + &#xD;&#xA;row(4).ToString + &quot;, &quot; + &#xD;&#xA;row(5).ToString + &quot;, &quot; + &#xD;&#xA;row(6).ToString + &quot;.&quot;]" />
+                              <ui:ExecuteNonQuery AffectedRecords="{x:Null}" ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" CommandType="Text" DisplayName="Execute Non Query" ExistingDbConnection="[dbConn]" sap:VirtualizedContainerService.HintSize="334,88" sap2010:WorkflowViewState.IdRef="ExecuteNonQuery_1" Sql="[&quot;INSERT INTO Historical (StockId, TradeDate, OpenPrice, HighPrice, LowPrice, ClosePrice, AdjClose, Volume) VALUES ('&quot;+&#xD;&#xA;stockId.ToString + &quot;', '&quot; + &#xD;&#xA;row(0).ToString + &quot;', '&quot; +&#xD;&#xA;row(1).ToString + &quot;', '&quot; + &#xD;&#xA;row(2).ToString + &quot;', '&quot; + &#xD;&#xA;row(3).ToString + &quot;', '&quot; + &#xD;&#xA;row(4).ToString + &quot;', '&quot; + &#xD;&#xA;row(5).ToString + &quot;', '&quot; + &#xD;&#xA;row(6).ToString +&quot;')&quot;]">
+                                <ui:ExecuteNonQuery.Parameters>
+                                  <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                                </ui:ExecuteNonQuery.Parameters>
+                              </ui:ExecuteNonQuery>
                             </Sequence>
                           </ActivityAction>
                         </ui:ForEachRow.Body>
@@ -444,7 +449,7 @@ System.Globalization.CultureInfo.InvariantCulture) Descending Select row).CopyTo
                     </If.Then>
                   </If>
                 </Sequence>
-                <ui:DatabaseDisconnect DatabaseConnection="[dbConn_Local]" DisplayName="Disconnect" sap:VirtualizedContainerService.HintSize="749,22" sap2010:WorkflowViewState.IdRef="DatabaseDisconnect_1" />
+                <ui:DatabaseDisconnect DatabaseConnection="[dbConn]" DisplayName="Disconnect" sap:VirtualizedContainerService.HintSize="749,22" sap2010:WorkflowViewState.IdRef="DatabaseDisconnect_1" />
               </Sequence>
             </FlowStep>
           </FlowStep.Next>
