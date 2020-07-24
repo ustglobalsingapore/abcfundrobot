@@ -8,7 +8,7 @@
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>1250.4,923.2</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>812,963.2</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>UpdateStockHistory_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <scg:List x:TypeArguments="x:String" Capacity="26">
@@ -167,7 +167,7 @@
               <av:PointCollection x:Key="ConnectorLocation">440,332.3 440,401</av:PointCollection>
             </scg:Dictionary>
           </sap:WorkflowViewStateService.ViewState>
-          <Sequence sap2010:Annotation.AnnotationText="Read the downloaded csv file inside temp folder. &#xA;" DisplayName="Read TempCsv" sap:VirtualizedContainerService.HintSize="375.2,559.2" sap2010:WorkflowViewState.IdRef="Sequence_5">
+          <Sequence sap2010:Annotation.AnnotationText="Read the downloaded csv file inside temp folder. &#xA;" DisplayName="Read TempCsv" sap:VirtualizedContainerService.HintSize="200,128.8" sap2010:WorkflowViewState.IdRef="Sequence_5">
             <sap:WorkflowViewStateService.ViewState>
               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -187,7 +187,7 @@
                   <av:Size x:Key="ShapeSize">200,320.8</av:Size>
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
-              <Sequence sap2010:Annotation.AnnotationText="Pre: &#xA;- Database Package must be installed.&#xA;- Uipathteam.DateTime Package must be installed.&#xA;&#xA;1. Check from the last records of tempDataTable from csv reading against the sql database.&#xA;2. if records don't exist in db, then prepare to add these new records.&#xA;3. * Bonus. Can update the permanant excel as well." DisplayName="Check against Database" sap:VirtualizedContainerService.HintSize="200,320.8" sap2010:WorkflowViewState.IdRef="Sequence_8">
+              <Sequence sap2010:Annotation.AnnotationText="Pre: &#xA;- Database Package must be installed.&#xA;- Uipathteam.DateTime Package must be installed.&#xA;&#xA;1. Check from the last records of tempDataTable from csv reading against the sql database.&#xA;2. if records don't exist in db, then prepare to add these new records.&#xA;3. * Bonus. Can update the permanant excel as well." DisplayName="Check against Database" sap:VirtualizedContainerService.HintSize="1008.8,3808.8" sap2010:WorkflowViewState.IdRef="Sequence_8">
                 <Sequence.Variables>
                   <Variable x:TypeArguments="ui:DatabaseConnection" Name="dbConn" />
                   <Variable x:TypeArguments="sd:DataTable" Name="dbResultDT" />
