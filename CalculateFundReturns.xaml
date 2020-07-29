@@ -1,0 +1,1066 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="CalculateFundReturns" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:udad="clr-namespace:UiPathTeam.Dates.Activities.Datetime;assembly=UiPathTeam.Dates.Activities" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_dbConn" Type="InArgument(ui:DatabaseConnection)" />
+    <x:Property Name="in_benchmarkRow" Type="InArgument(sd:DataRow)" />
+    <x:Property Name="in_totalWeight" Type="InArgument(x:Double)" />
+    <x:Property Name="in_holdingsDT" Type="InArgument(sd:DataTable)" />
+    <x:Property Name="in_fundStockId" Type="InArgument(x:String)" />
+  </x:Members>
+  <mva:VisualBasic.Settings>
+    <x:Null />
+  </mva:VisualBasic.Settings>
+  <sap:VirtualizedContainerService.HintSize>784,7433.6</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>CalculateFundReturns_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="24">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>UiPath.Database</x:String>
+      <x:String>System.Xml.Serialization</x:String>
+      <x:String>System.Globalization</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="23">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Database</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
+      <AssemblyReference>UiPath.Mail</AssemblyReference>
+      <AssemblyReference>UiPath.CV</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities.Design</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:Annotation.AnnotationText="Pre: &#xA;1. Benchmark tradeDate is passed in as datarow.&#xA;2. StockId and Weight is passed in as datatable in_stockIdsDT.&#xA;3. Database connection is passed in for query.&#xA;" DisplayName="CalculateFundReturns" sap:VirtualizedContainerService.HintSize="497.6,7228.8" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="tradeDate" />
+      <Variable x:TypeArguments="x:Double" Name="ReturnsOneDay" />
+      <Variable x:TypeArguments="x:Double" Name="ReturnsOneMonth" />
+      <Variable x:TypeArguments="x:Double" Name="ReturnsThreeMonth" />
+      <Variable x:TypeArguments="x:Double" Name="ReturnsSixMonth" />
+      <Variable x:TypeArguments="x:Double" Name="ReturnsOneYear" />
+      <Variable x:TypeArguments="x:Double" Name="ReturnsYearToDate" />
+      <Variable x:TypeArguments="x:Double" Name="ReturnsAnnualised" />
+      <Variable x:TypeArguments="x:Double" Name="ReturnsSinceInception" />
+      <Variable x:TypeArguments="x:Double" Name="dayDifference" />
+      <Variable x:TypeArguments="x:Int32" Name="stockId" />
+      <Variable x:TypeArguments="x:Double" Name="stockWeight" />
+      <Variable x:TypeArguments="x:Double" Name="currentPrice" />
+      <Variable x:TypeArguments="sd:DataTable" Name="dbAllHistoricalDT" />
+      <Variable x:TypeArguments="x:String" Name="sqlQuery" />
+      <Variable x:TypeArguments="sd:DataTable" Name="dbFilteredDT" />
+      <Variable x:TypeArguments="s:DateTime" Name="prevTradeDate" />
+      <Variable x:TypeArguments="x:Double" Name="prevPrice" />
+      <Variable x:TypeArguments="x:Double" Name="tempStockReturn" />
+      <Variable x:TypeArguments="x:String" Name="fundStockID" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Assign sap:VirtualizedContainerService.HintSize="456,60" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[tradeDate]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[in_benchmarkRow(1).ToString.Split(" "C)(0).ToString]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="456,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Calculate Fund Returns...for tradeDate:&quot; + tradeDate]" />
+    <Assign sap:VirtualizedContainerService.HintSize="456,60" sap2010:WorkflowViewState.IdRef="Assign_7">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Double">[ReturnsOneDay]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Double">0</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign sap:VirtualizedContainerService.HintSize="456,60" sap2010:WorkflowViewState.IdRef="Assign_21">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Double">[ReturnsOneMonth]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Double">0</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign sap:VirtualizedContainerService.HintSize="456,60" sap2010:WorkflowViewState.IdRef="Assign_22">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Double">[ReturnsThreeMonth]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Double">0</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign sap:VirtualizedContainerService.HintSize="456,60" sap2010:WorkflowViewState.IdRef="Assign_23">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Double">[ReturnsSixMonth]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Double">0</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign sap:VirtualizedContainerService.HintSize="456,60" sap2010:WorkflowViewState.IdRef="Assign_24">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Double">[ReturnsOneYear]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Double">0</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign sap:VirtualizedContainerService.HintSize="456,60" sap2010:WorkflowViewState.IdRef="Assign_25">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Double">[ReturnsYearToDate]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Double">0</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign sap:VirtualizedContainerService.HintSize="456,60" sap2010:WorkflowViewState.IdRef="Assign_26">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Double">[ReturnsSinceInception]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Double">0</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign sap:VirtualizedContainerService.HintSize="456,60" sap2010:WorkflowViewState.IdRef="Assign_27">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:Double">[ReturnsAnnualised]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:Double">0</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="Assign SQLQeuery" sap:VirtualizedContainerService.HintSize="456,60" sap2010:WorkflowViewState.IdRef="Assign_49">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">["SELECT * FROM [Historical]"]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="" CommandType="Text" DataTable="[dbAllHistoricalDT]" DisplayName="Get All Historical Data" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="456,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_12" Sql="[sqlQuery]">
+      <ui:ExecuteQuery.Parameters>
+        <scg:Dictionary x:TypeArguments="x:String, Argument" />
+      </ui:ExecuteQuery.Parameters>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:ExecuteQuery>
+    <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[in_holdingsDT]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="456,5381.6" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+      <ui:ForEachRow.Body>
+        <ActivityAction x:TypeArguments="sd:DataRow">
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+          </ActivityAction.Argument>
+          <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="406.4,5232.8" sap2010:WorkflowViewState.IdRef="Sequence_2">
+            <Sequence.Variables>
+              <Variable x:TypeArguments="sd:DataTable" Name="dbStockHistoricalDT" />
+              <Variable x:TypeArguments="x:Double" Name="tempReturnSinceInception" />
+            </Sequence.Variables>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <Assign sap:VirtualizedContainerService.HintSize="364.8,60" sap2010:WorkflowViewState.IdRef="Assign_5">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:Int32">[stockId]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32(row(0))]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="364.8,60" sap2010:WorkflowViewState.IdRef="Assign_6">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:Double">[stockWeight]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(row(1))]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <ui:FilterDataTable DataTable="[dbAllHistoricalDT]" DisplayName="Filter Data Table by stockId" FilterRowsMode="Keep" sap:VirtualizedContainerService.HintSize="364.8,60" sap2010:WorkflowViewState.IdRef="FilterDataTable_2" OutputDataTable="[dbStockHistoricalDT]" SelectColumnsMode="Keep">
+              <ui:FilterDataTable.Filters>
+                <scg:List x:TypeArguments="ui:FilterOperationArgument" Capacity="4">
+                  <ui:FilterOperationArgument BooleanOperator="And" Operator="EQ">
+                    <ui:FilterOperationArgument.Column>
+                      <InArgument x:TypeArguments="x:String">["StockId"]</InArgument>
+                    </ui:FilterOperationArgument.Column>
+                    <ui:FilterOperationArgument.Operand>
+                      <InArgument x:TypeArguments="x:Int32">[stockId]</InArgument>
+                    </ui:FilterOperationArgument.Operand>
+                  </ui:FilterOperationArgument>
+                </scg:List>
+              </ui:FilterDataTable.Filters>
+              <ui:FilterDataTable.SelectColumns>
+                <scg:List x:TypeArguments="InArgument" Capacity="4">
+                  <InArgument x:TypeArguments="x:String">["StockId"]</InArgument>
+                  <InArgument x:TypeArguments="x:String">["TradeDate"]</InArgument>
+                  <InArgument x:TypeArguments="x:String">["AdjClose"]</InArgument>
+                </scg:List>
+              </ui:FilterDataTable.SelectColumns>
+            </ui:FilterDataTable>
+            <Sequence DisplayName="Get Current Price" sap:VirtualizedContainerService.HintSize="364.8,315.2" sap2010:WorkflowViewState.IdRef="Sequence_24">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <Assign DisplayName="Filtered DataTable by tradeDate" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_52">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="sd:DataTable">[dbFilteredDT]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="sd:DataTable">[dbStockHistoricalDT.Select("TradeDate&lt;='" + tradeDate+"'").CopyToDatatable]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <ui:SortDataTable ColumnIndex="{x:Null}" DataColumn="{x:Null}" ColumnName="TradeDate" DataTable="[dbFilteredDT]" DisplayName="Sort by Date Desc" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="SortDataTable_1" Order="Decending" OutputDataTable="[dbFilteredDT]" SortOrder="Descending" />
+              <Assign DisplayName="Assign currentPrice" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_53">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[currentPrice]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbFilteredDT.Rows(0)(2))]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+            <Sequence DisplayName="Get 1 Day" sap:VirtualizedContainerService.HintSize="364.8,577.6" sap2010:WorkflowViewState.IdRef="Sequence_25">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <ui:ClearDataTable DataTable="[dbFilteredDT]" DisplayName="Clear Data Table" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="ClearDataTable_1" />
+              <Assign DisplayName="Get Prev Date" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_58">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="s:DateTime">[prevTradeDate]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="s:DateTime">[DateTime.ParseExact(tradeDate, "M/d/yyyy", System.Globalization.CultureInfo.InvariantCulture).AddDays(-1)]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign DisplayName="Filtered DataTable by tradeDate" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_56">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="sd:DataTable">[dbFilteredDT]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="sd:DataTable">[dbStockHistoricalDT.Select("TradeDate &lt;= '"+prevTradeDate.ToShortDateString+"'").CopyToDatatable]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <ui:SortDataTable ColumnIndex="{x:Null}" DataColumn="{x:Null}" ColumnName="TradeDate" DataTable="[dbFilteredDT]" DisplayName="Sort by Date Desc" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="SortDataTable_2" Order="Decending" OutputDataTable="[dbFilteredDT]" SortOrder="Descending" />
+              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_60">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbFilteredDT.Rows(0)(2))]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_61">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[ReturnsOneDay]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[ReturnsOneDay + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+            <Sequence DisplayName="Get 1 Month" sap:VirtualizedContainerService.HintSize="364.8,577.6" sap2010:WorkflowViewState.IdRef="Sequence_26">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <ui:ClearDataTable DataTable="[dbFilteredDT]" DisplayName="Clear Data Table" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="ClearDataTable_3" />
+              <Assign DisplayName="Get Prev Date" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_62">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="s:DateTime">[prevTradeDate]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="s:DateTime">[DateTime.ParseExact(tradeDate, "M/d/yyyy", System.Globalization.CultureInfo.InvariantCulture).AddDays(-30)]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign DisplayName="Filtered DataTable by tradeDate" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_63">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="sd:DataTable">[dbFilteredDT]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="sd:DataTable">[dbStockHistoricalDT.Select("TradeDate &lt;= '"+prevTradeDate.ToShortDateString+"'").CopyToDatatable]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <ui:SortDataTable ColumnIndex="{x:Null}" DataColumn="{x:Null}" ColumnName="TradeDate" DataTable="[dbFilteredDT]" DisplayName="Sort by Date Desc" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="SortDataTable_3" Order="Decending" OutputDataTable="[dbFilteredDT]" SortOrder="Descending" />
+              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_64">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbFilteredDT.Rows(0)(2))]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_66">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[ReturnsOneMonth]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[ReturnsOneMonth + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+            <Sequence DisplayName="Get 3 Month" sap:VirtualizedContainerService.HintSize="364.8,577.6" sap2010:WorkflowViewState.IdRef="Sequence_27">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <ui:ClearDataTable DataTable="[dbFilteredDT]" DisplayName="Clear Data Table" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="ClearDataTable_4" />
+              <Assign DisplayName="Get Prev Date" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_67">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="s:DateTime">[prevTradeDate]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="s:DateTime">[DateTime.ParseExact(tradeDate, "M/d/yyyy", System.Globalization.CultureInfo.InvariantCulture).AddDays(-90)]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign DisplayName="Filtered DataTable by tradeDate" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_68">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="sd:DataTable">[dbFilteredDT]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="sd:DataTable">[dbStockHistoricalDT.Select("TradeDate &lt;= '"+prevTradeDate.ToShortDateString+"'").CopyToDatatable]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <ui:SortDataTable ColumnIndex="{x:Null}" DataColumn="{x:Null}" ColumnName="TradeDate" DataTable="[dbFilteredDT]" DisplayName="Sort by Date Desc" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="SortDataTable_4" Order="Decending" OutputDataTable="[dbFilteredDT]" SortOrder="Descending" />
+              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_69">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbFilteredDT.Rows(0)(2))]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_71">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[ReturnsThreeMonth]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[ReturnsThreeMonth + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+            <Sequence DisplayName="Get 6 Month" sap:VirtualizedContainerService.HintSize="364.8,577.6" sap2010:WorkflowViewState.IdRef="Sequence_28">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <ui:ClearDataTable DataTable="[dbFilteredDT]" DisplayName="Clear Data Table" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="ClearDataTable_5" />
+              <Assign DisplayName="Get Prev Date" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_72">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="s:DateTime">[prevTradeDate]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="s:DateTime">[DateTime.ParseExact(tradeDate, "M/d/yyyy", System.Globalization.CultureInfo.InvariantCulture).AddDays(-180)]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign DisplayName="Filtered DataTable by tradeDate" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_73">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="sd:DataTable">[dbFilteredDT]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="sd:DataTable">[dbStockHistoricalDT.Select("TradeDate &lt;= '"+prevTradeDate.ToShortDateString+"'").CopyToDatatable]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <ui:SortDataTable ColumnIndex="{x:Null}" DataColumn="{x:Null}" ColumnName="TradeDate" DataTable="[dbFilteredDT]" DisplayName="Sort by Date Desc" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="SortDataTable_5" Order="Decending" OutputDataTable="[dbFilteredDT]" SortOrder="Descending" />
+              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_74">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbFilteredDT.Rows(0)(2))]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_76">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[ReturnsSixMonth]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[ReturnsSixMonth + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+            <Sequence DisplayName="Get 1 year" sap:VirtualizedContainerService.HintSize="364.8,577.6" sap2010:WorkflowViewState.IdRef="Sequence_29">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <ui:ClearDataTable DataTable="[dbFilteredDT]" DisplayName="Clear Data Table" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="ClearDataTable_6" />
+              <Assign DisplayName="Get Prev Date" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_77">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="s:DateTime">[prevTradeDate]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="s:DateTime">[DateTime.ParseExact(tradeDate, "M/d/yyyy", System.Globalization.CultureInfo.InvariantCulture).AddDays(-365)]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign DisplayName="Filtered DataTable by tradeDate" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_78">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="sd:DataTable">[dbFilteredDT]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="sd:DataTable">[dbStockHistoricalDT.Select("TradeDate &lt;= '"+prevTradeDate.ToShortDateString+"'").CopyToDatatable]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <ui:SortDataTable ColumnIndex="{x:Null}" DataColumn="{x:Null}" ColumnName="TradeDate" DataTable="[dbFilteredDT]" DisplayName="Sort by Date Asc" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="SortDataTable_6" Order="Decending" OutputDataTable="[dbFilteredDT]" SortOrder="Descending" />
+              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_79">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbFilteredDT.Rows(0)(2))]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_81">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[ReturnsOneYear]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[ReturnsOneYear + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+            <Sequence DisplayName="Get Year To Date" sap:VirtualizedContainerService.HintSize="364.8,577.6" sap2010:WorkflowViewState.IdRef="Sequence_30">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <ui:ClearDataTable DataTable="[dbFilteredDT]" DisplayName="Clear Data Table" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="ClearDataTable_7" />
+              <Assign DisplayName="Get Prev Date" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_82">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="s:DateTime">[prevTradeDate]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="s:DateTime">[new DateTime(now.Year,1,1)]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign DisplayName="Filtered DataTable by tradeDate" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_83">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="sd:DataTable">[dbFilteredDT]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="sd:DataTable">[dbStockHistoricalDT.Select("TradeDate &lt;= '"+prevTradeDate.ToShortDateString+"'").CopyToDatatable]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <ui:SortDataTable ColumnIndex="{x:Null}" DataColumn="{x:Null}" ColumnName="TradeDate" DataTable="[dbFilteredDT]" DisplayName="Sort by Date Desc" sap:VirtualizedContainerService.HintSize="262.4,22.4" sap2010:WorkflowViewState.IdRef="SortDataTable_7" Order="Decending" OutputDataTable="[dbFilteredDT]" SortOrder="Descending" />
+              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_84">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbFilteredDT.Rows(0)(2))]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_86">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[ReturnsYearToDate]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[ReturnsYearToDate + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+            <Sequence DisplayName="Get Since Inception &amp; Annualised" sap:VirtualizedContainerService.HintSize="364.8,584" sap2010:WorkflowViewState.IdRef="Sequence_31">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <Assign sap:VirtualizedContainerService.HintSize="323.2,60" sap2010:WorkflowViewState.IdRef="Assign_89">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbStockHistoricalDT.Rows(0)(2))]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign sap:VirtualizedContainerService.HintSize="323.2,60" sap2010:WorkflowViewState.IdRef="Assign_91">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[tempReturnSinceInception]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[(((currentPrice-prevPrice)/prevPrice)*100)]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign sap:VirtualizedContainerService.HintSize="323.2,60" sap2010:WorkflowViewState.IdRef="Assign_92">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[ReturnsSinceInception]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[ReturnsSinceInception + tempReturnSinceInception*stockWeight/in_totalWeight]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <udad:CompareDates Result="{x:Null}" CheckDay="True" CheckHours="False" CheckMinutes="False" CheckMonth="False" CheckSecondes="False" CheckYear="False" Date1DT="[DateTime.ParseExact(dbStockHistoricalDT.Rows(0)(1).ToString, &quot;M/d/yyyy hh:mm:ss&quot;, System.Globalization.CultureInfo.InvariantCulture)]" Date2DT="[DateTime.ParseExact(tradeDate, &quot;M/d/yyyy&quot;, System.Globalization.CultureInfo.InvariantCulture)]" DateDifference="[dayDifference]" DisplayName="Compare dates" sap:VirtualizedContainerService.HintSize="323.2,91.2" sap2010:WorkflowViewState.IdRef="CompareDates_2" OutputDateDifferenceUnits="Days" />
+              <Assign sap:VirtualizedContainerService.HintSize="323.2,60" sap2010:WorkflowViewState.IdRef="Assign_93">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Double">[ReturnsAnnualised]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Double">[ReturnsAnnualised + (Math.Pow((1+tempReturnSinceInception/100), (365/dayDifference))-1)*100*stockWeight/in_totalWeight]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+            <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="364.8,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_46" Text="[&quot;Adding Returns for HoldingStockId=&quot;+ stockId.ToString]" />
+            <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="364.8,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_1">
+              <ui:CommentOut.Body>
+                <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="660,1908.8" sap2010:WorkflowViewState.IdRef="Sequence_23">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="333.6,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_34" Text="[&quot;Hist:&quot; + dbStockHistoricalDT.Rows.Count.ToString + &quot;, tradeDate:&quot;+tradeDate + &quot; vs &quot; + &quot;historical date: &quot; + dbStockHistoricalDT.Rows(dbStockHistoricalDT.Rows.Count-1)(1).ToString.Split(&quot; &quot;C)(0).ToString + &#xA;&quot;, FHist:&quot;+dbFilteredDT.Rows.Count.ToString]" />
+                  <Sequence DisplayName="Get 1 Day" sap:VirtualizedContainerService.HintSize="333.6,68.8" sap2010:WorkflowViewState.IdRef="Sequence_5">
+                    <Sequence.Variables>
+                      <Variable x:TypeArguments="x:Double" Name="prevPrice" />
+                      <Variable x:TypeArguments="x:Double" Name="tempStockReturn" />
+                    </Sequence.Variables>
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <Assign sap:VirtualizedContainerService.HintSize="576.8,60" sap2010:WorkflowViewState.IdRef="Assign_10">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">["SELECT TOP 1 [AdjClose] FROM [Historical] WHERE [StockId] = '"+stockId+"' AND [TradeDate] &lt;= DATEADD(DAY, -1, '"+tradeDate+"') ORDER BY [TradeDate] DESC"]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="" CommandType="Text" DataTable="[dbAllHistoricalDT]" DisplayName="Get Historical" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="576.8,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_3" Sql="[sqlQuery]">
+                      <ui:ExecuteQuery.Parameters>
+                        <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                      </ui:ExecuteQuery.Parameters>
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </ui:ExecuteQuery>
+                    <If Condition="[dbAllHistoricalDT.Rows.Count &gt; 0]" DisplayName="If valid Result" sap:VirtualizedContainerService.HintSize="576.8,402.4" sap2010:WorkflowViewState.IdRef="If_2">
+                      <If.Then>
+                        <Sequence sap:VirtualizedContainerService.HintSize="304,252.8" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_11">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbResultDT(0)(0))]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_12">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[ReturnsOneDay]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[ReturnsOneDay + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                        </Sequence>
+                      </If.Then>
+                      <If.Else>
+                        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="228.8,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_5" Text="[&quot;Missing StockId:&quot; + stockId + &quot; 1 day price&quot;]" />
+                      </If.Else>
+                    </If>
+                  </Sequence>
+                  <Sequence DisplayName="Get 1 Month" sap:VirtualizedContainerService.HintSize="333.6,68.8" sap2010:WorkflowViewState.IdRef="Sequence_10">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <Assign sap:VirtualizedContainerService.HintSize="576.8,60" sap2010:WorkflowViewState.IdRef="Assign_18">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">["SELECT TOP 1 [AdjClose] FROM [Historical] WHERE [StockId] = '"+stockId+"' AND [TradeDate] &lt;= DATEADD(DAY, -30, '"+tradeDate+"') ORDER BY [TradeDate] DESC"]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="" CommandType="Text" DataTable="[dbAllHistoricalDT]" DisplayName="Get Historical" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="576.8,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_5" Sql="[sqlQuery]">
+                      <ui:ExecuteQuery.Parameters>
+                        <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                      </ui:ExecuteQuery.Parameters>
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </ui:ExecuteQuery>
+                    <If Condition="[dbAllHistoricalDT.Rows.Count &gt; 0]" DisplayName="If valid Result" sap:VirtualizedContainerService.HintSize="576.8,402.4" sap2010:WorkflowViewState.IdRef="If_4">
+                      <If.Then>
+                        <Sequence sap:VirtualizedContainerService.HintSize="304,252.8" sap2010:WorkflowViewState.IdRef="Sequence_9">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_19">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbResultDT(0)(0))]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_20">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[ReturnsOneMonth]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[ReturnsOneMonth + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                        </Sequence>
+                      </If.Then>
+                      <If.Else>
+                        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="228.8,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_15" Text="[&quot;Missing StockId:&quot; + stockId + &quot; 1 Month price&quot;]" />
+                      </If.Else>
+                    </If>
+                  </Sequence>
+                  <Sequence DisplayName="Get 3 Month" sap:VirtualizedContainerService.HintSize="333.6,68.8" sap2010:WorkflowViewState.IdRef="Sequence_12">
+                    <Sequence.Variables>
+                      <Variable x:TypeArguments="x:Double" Name="prevPrice" />
+                      <Variable x:TypeArguments="x:Double" Name="tempStockReturn" />
+                    </Sequence.Variables>
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <Assign sap:VirtualizedContainerService.HintSize="576.8,60" sap2010:WorkflowViewState.IdRef="Assign_28">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">["SELECT TOP 1 [AdjClose] FROM [Historical] WHERE [StockId] = '"+stockId+"' AND [TradeDate] &lt;= DATEADD(DAY, -90, '"+tradeDate+"') ORDER BY [TradeDate] DESC"]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="" CommandType="Text" DataTable="[dbAllHistoricalDT]" DisplayName="Get Historical" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="576.8,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_6" Sql="[sqlQuery]">
+                      <ui:ExecuteQuery.Parameters>
+                        <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                      </ui:ExecuteQuery.Parameters>
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </ui:ExecuteQuery>
+                    <If Condition="[dbAllHistoricalDT.Rows.Count &gt; 0]" DisplayName="If valid Result" sap:VirtualizedContainerService.HintSize="576.8,402.4" sap2010:WorkflowViewState.IdRef="If_5">
+                      <If.Then>
+                        <Sequence sap:VirtualizedContainerService.HintSize="304,252.8" sap2010:WorkflowViewState.IdRef="Sequence_11">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_29">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbResultDT(0)(0))]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_30">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[ReturnsThreeMonth]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[ReturnsThreeMonth + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                        </Sequence>
+                      </If.Then>
+                      <If.Else>
+                        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="228.8,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_17" Text="[&quot;Missing StockId:&quot; + stockId + &quot; 3 Month price&quot;]" />
+                      </If.Else>
+                    </If>
+                  </Sequence>
+                  <Sequence DisplayName="Get 6 Month" sap:VirtualizedContainerService.HintSize="333.6,68.8" sap2010:WorkflowViewState.IdRef="Sequence_14">
+                    <Sequence.Variables>
+                      <Variable x:TypeArguments="x:Double" Name="prevPrice" />
+                      <Variable x:TypeArguments="x:Double" Name="tempStockReturn" />
+                    </Sequence.Variables>
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <Assign sap:VirtualizedContainerService.HintSize="576.8,60" sap2010:WorkflowViewState.IdRef="Assign_31">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">["SELECT TOP 1 [AdjClose] FROM [Historical] WHERE [StockId] = '"+stockId+"' AND [TradeDate] &lt;= DATEADD(DAY, -180, '"+tradeDate+"') ORDER BY [TradeDate] DESC"]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="" CommandType="Text" DataTable="[dbAllHistoricalDT]" DisplayName="Get Historical" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="576.8,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_7" Sql="[sqlQuery]">
+                      <ui:ExecuteQuery.Parameters>
+                        <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                      </ui:ExecuteQuery.Parameters>
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </ui:ExecuteQuery>
+                    <If Condition="[dbAllHistoricalDT.Rows.Count &gt; 0]" DisplayName="If valid Result" sap:VirtualizedContainerService.HintSize="576.8,402.4" sap2010:WorkflowViewState.IdRef="If_6">
+                      <If.Then>
+                        <Sequence sap:VirtualizedContainerService.HintSize="304,252.8" sap2010:WorkflowViewState.IdRef="Sequence_13">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_32">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbResultDT(0)(0))]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_33">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[ReturnsSixMonth]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[ReturnsSixMonth + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                        </Sequence>
+                      </If.Then>
+                      <If.Else>
+                        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="228.8,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_18" Text="[&quot;Missing StockId:&quot; + stockId + &quot; 6 Month price&quot;]" />
+                      </If.Else>
+                    </If>
+                  </Sequence>
+                  <Sequence DisplayName="Get 1 Year" sap:VirtualizedContainerService.HintSize="333.6,68.8" sap2010:WorkflowViewState.IdRef="Sequence_16">
+                    <Sequence.Variables>
+                      <Variable x:TypeArguments="x:Double" Name="prevPrice" />
+                      <Variable x:TypeArguments="x:Double" Name="tempStockReturn" />
+                    </Sequence.Variables>
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <Assign sap:VirtualizedContainerService.HintSize="576.8,60" sap2010:WorkflowViewState.IdRef="Assign_34">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">["SELECT TOP 1 [AdjClose] FROM [Historical] WHERE [StockId] = '"+stockId+"' AND [TradeDate] &lt;= DATEADD(DAY, -365, '"+tradeDate+"') ORDER BY [TradeDate] DESC"]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="" CommandType="Text" DataTable="[dbAllHistoricalDT]" DisplayName="Get Historical" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="576.8,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_8" Sql="[sqlQuery]">
+                      <ui:ExecuteQuery.Parameters>
+                        <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                      </ui:ExecuteQuery.Parameters>
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </ui:ExecuteQuery>
+                    <If Condition="[dbAllHistoricalDT.Rows.Count &gt; 0]" DisplayName="If valid Result" sap:VirtualizedContainerService.HintSize="576.8,402.4" sap2010:WorkflowViewState.IdRef="If_7">
+                      <If.Then>
+                        <Sequence sap:VirtualizedContainerService.HintSize="304,252.8" sap2010:WorkflowViewState.IdRef="Sequence_15">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_35">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbResultDT(0)(0))]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_36">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[ReturnsOneYear]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[ReturnsOneYear + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                        </Sequence>
+                      </If.Then>
+                      <If.Else>
+                        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="228.8,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_19" Text="[&quot;Missing StockId:&quot; + stockId + &quot; 1 Year price&quot;]" />
+                      </If.Else>
+                    </If>
+                  </Sequence>
+                  <Sequence DisplayName="Get Year to date" sap:VirtualizedContainerService.HintSize="333.6,68.8" sap2010:WorkflowViewState.IdRef="Sequence_22">
+                    <Sequence.Variables>
+                      <Variable x:TypeArguments="x:Double" Name="prevPrice" />
+                      <Variable x:TypeArguments="x:Double" Name="tempStockReturn" />
+                    </Sequence.Variables>
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <Assign sap:VirtualizedContainerService.HintSize="576.8,60" sap2010:WorkflowViewState.IdRef="Assign_43">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">["SELECT TOP 1 [AdjClose] FROM [Historical] WHERE [StockId] = '"+stockId+"' AND [TradeDate] &gt;= DATEADD(yy, DATEDIFF(yy, 0, GETDATE()), 0) "]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="" CommandType="Text" DataTable="[dbAllHistoricalDT]" DisplayName="Get Historical" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="576.8,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_11" Sql="[sqlQuery]">
+                      <ui:ExecuteQuery.Parameters>
+                        <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                      </ui:ExecuteQuery.Parameters>
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </ui:ExecuteQuery>
+                    <If Condition="[dbAllHistoricalDT.Rows.Count &gt; 0]" DisplayName="If valid Result" sap:VirtualizedContainerService.HintSize="576.8,402.4" sap2010:WorkflowViewState.IdRef="If_10">
+                      <If.Then>
+                        <Sequence sap:VirtualizedContainerService.HintSize="304,252.8" sap2010:WorkflowViewState.IdRef="Sequence_21">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_44">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbResultDT(0)(0))]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_45">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[ReturnsYearToDate]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[ReturnsYearToDate + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                        </Sequence>
+                      </If.Then>
+                      <If.Else>
+                        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="228.8,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_22" Text="[&quot;Missing StockId:&quot; + stockId + &quot; Year to date price&quot;]" />
+                      </If.Else>
+                    </If>
+                  </Sequence>
+                  <Sequence DisplayName="Get Inception" sap:VirtualizedContainerService.HintSize="333.6,68.8" sap2010:WorkflowViewState.IdRef="Sequence_18">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <Assign sap:VirtualizedContainerService.HintSize="637.6,60" sap2010:WorkflowViewState.IdRef="Assign_37">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">["SELECT TOP 1 [AdjClose], [TradeDate] FROM [Historical] WHERE [StockId] = '"+stockId + "'"]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="" CommandType="Text" DataTable="[dbAllHistoricalDT]" DisplayName="Get Historical" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="637.6,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_9" Sql="[sqlQuery]">
+                      <ui:ExecuteQuery.Parameters>
+                        <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                      </ui:ExecuteQuery.Parameters>
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </ui:ExecuteQuery>
+                    <If Condition="[dbAllHistoricalDT.Rows.Count &gt; 0]" DisplayName="If valid Result" sap:VirtualizedContainerService.HintSize="637.6,733.6" sap2010:WorkflowViewState.IdRef="If_8">
+                      <If.Then>
+                        <Sequence sap:VirtualizedContainerService.HintSize="364.8,584" sap2010:WorkflowViewState.IdRef="Sequence_17">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <Assign sap:VirtualizedContainerService.HintSize="323.2,60" sap2010:WorkflowViewState.IdRef="Assign_38">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[prevPrice]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(dbResultDT(0)(0))]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <Assign sap:VirtualizedContainerService.HintSize="323.2,60" sap2010:WorkflowViewState.IdRef="Assign_47">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[tempReturnSinceInception]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[(((currentPrice-prevPrice)/prevPrice)*100)]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <Assign sap:VirtualizedContainerService.HintSize="323.2,60" sap2010:WorkflowViewState.IdRef="Assign_39">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[ReturnsSinceInception]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[ReturnsSinceInception + (((currentPrice-prevPrice)/prevPrice)*100)*stockWeight/in_totalWeight]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <udad:CompareDates Result="{x:Null}" CheckDay="True" CheckHours="False" CheckMinutes="False" CheckMonth="False" CheckSecondes="False" CheckYear="False" Date1DT="[DateTime.ParseExact(dbAllHistoricalDT.Rows(0)(1).ToString, &quot;M/d/yyyy hh:mm:ss&quot;, System.Globalization.CultureInfo.InvariantCulture)]" Date2DT="[DateTime.ParseExact(tradeDate, &quot;M/d/yyyy hh:mm:ss&quot;, System.Globalization.CultureInfo.InvariantCulture)]" DateDifference="[dayDifference]" DisplayName="Compare dates" sap:VirtualizedContainerService.HintSize="323.2,91.2" sap2010:WorkflowViewState.IdRef="CompareDates_1" OutputDateDifferenceUnits="Days" />
+                          <Assign sap:VirtualizedContainerService.HintSize="323.2,60" sap2010:WorkflowViewState.IdRef="Assign_46">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[ReturnsAnnualised]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[ReturnsAnnualised + (Math.Pow((1+tempReturnSinceInception/100), (365/dayDifference))-1)*100*stockWeight/in_totalWeight]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                        </Sequence>
+                      </If.Then>
+                      <If.Else>
+                        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="228.8,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_20" Text="[&quot;Missing StockId:&quot; + stockId + &quot;Inception price&quot;]" />
+                      </If.Else>
+                    </If>
+                  </Sequence>
+                  <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="333.6,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_24" Text="[&quot;StockId: &quot; + stockId + &#xA;&quot;, TradeDate: &quot; + tradeDate.ToString.Split(&quot; &quot;C)(0).ToString + &#xA;&quot;, 1 Day: &quot; + ReturnsOneDay.ToString + &#xA;&quot;, 1 month: &quot; + ReturnsOneMonth.ToString + &#xA;&quot;, 3 month: &quot; + ReturnsThreeMonth.ToString + &#xA;&quot;, 6 month: &quot; + ReturnsSixMonth.ToString +&#xA;&quot;, 1 Year: &quot; + ReturnsOneYear.ToString +&#xA;&quot;, YTD: &quot; + ReturnsYearToDate.ToString + &#xA;&quot;, Inception: &quot; + ReturnsSinceInception.ToString+&#xA;&quot;, Annualised: &quot; + ReturnsAnnualised.ToString]" />
+                  <Assign sap:VirtualizedContainerService.HintSize="333.6,64" sap2010:WorkflowViewState.IdRef="Assign_51">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:String" xml:space="preserve">["INSERT INTO [Periodic] (StockId, TradeDate, OneDay, OneMonth, ThreeMonth, SixMonth, OneYear, YearToDate, SinceInception, AnnualisedReturns) VALUES ('"+
+stockId.ToString + "', '" + 
+tradeDate.ToString.Split(" "C)(0).ToString + "', '" + 
+ReturnsOneDay.ToString + "', '" + 
+ReturnsOneMonth.ToString  + "', '" +
+ReturnsThreeMonth.ToString + "', '" + 
+ReturnsSixMonth.ToString + "', '" + 
+ReturnsOneYear.ToString + "', '" + 
+ReturnsYearToDate.ToString + "', '" + 
+ReturnsSinceInception.ToString + "', '" + 
+ReturnsAnnualised.ToString +"')"]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <ui:ExecuteNonQuery AffectedRecords="{x:Null}" ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" CommandType="Text" DisplayName="Execute Non Query" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="333.6,89.6" sap2010:WorkflowViewState.IdRef="ExecuteNonQuery_2" Sql="[sqlQuery]">
+                    <ui:ExecuteNonQuery.Parameters>
+                      <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                    </ui:ExecuteNonQuery.Parameters>
+                  </ui:ExecuteNonQuery>
+                </Sequence>
+              </ui:CommentOut.Body>
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+            </ui:CommentOut>
+          </Sequence>
+        </ActivityAction>
+      </ui:ForEachRow.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:ForEachRow>
+    <Sequence DisplayName="Save SQL" sap:VirtualizedContainerService.HintSize="456,390.4" sap2010:WorkflowViewState.IdRef="Sequence_34">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="333.6,64" sap2010:WorkflowViewState.IdRef="WriteLine_45" Text="[&quot;FundStockId: &quot; + in_fundStockId + &#xD;&#xA;&quot;, TradeDate: &quot; + tradeDate + &#xD;&#xA;&quot;, 1 Day: &quot; + ReturnsOneDay.ToString + &#xD;&#xA;&quot;, 1 month: &quot; + ReturnsOneMonth.ToString + &#xD;&#xA;&quot;, 3 month: &quot; + ReturnsThreeMonth.ToString + &#xD;&#xA;&quot;, 6 month: &quot; + ReturnsSixMonth.ToString +&#xD;&#xA;&quot;, 1 Year: &quot; + ReturnsOneYear.ToString +&#xD;&#xA;&quot;, YTD: &quot; + ReturnsYearToDate.ToString + &#xD;&#xA;&quot;, Inception: &quot; + ReturnsSinceInception.ToString+&#xD;&#xA;&quot;, Annualised: &quot; + ReturnsAnnualised.ToString]" />
+      <Assign sap:VirtualizedContainerService.HintSize="333.6,64" sap2010:WorkflowViewState.IdRef="Assign_96">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String" xml:space="preserve">["INSERT INTO [Periodic] (StockId, TradeDate, OneDay, OneMonth, ThreeMonth, SixMonth, OneYear, YearToDate, SinceInception, AnnualisedReturns) VALUES ('"+
+in_fundStockId + "', '" + 
+tradeDate + "', '" + 
+ReturnsOneDay.ToString + "', '" + 
+ReturnsOneMonth.ToString  + "', '" +
+ReturnsThreeMonth.ToString + "', '" + 
+ReturnsSixMonth.ToString + "', '" + 
+ReturnsOneYear.ToString + "', '" + 
+ReturnsYearToDate.ToString + "', '" + 
+ReturnsSinceInception.ToString + "', '" + 
+ReturnsAnnualised.ToString +"')"]</InArgument>
+        </Assign.Value>
+      </Assign>
+      <ui:ExecuteNonQuery AffectedRecords="{x:Null}" ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" CommandType="Text" DisplayName="Execute Non Query" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="333.6,89.6" sap2010:WorkflowViewState.IdRef="ExecuteNonQuery_5" Sql="[sqlQuery]">
+        <ui:ExecuteNonQuery.Parameters>
+          <scg:Dictionary x:TypeArguments="x:String, Argument" />
+        </ui:ExecuteNonQuery.Parameters>
+      </ui:ExecuteNonQuery>
+    </Sequence>
+  </Sequence>
+</Activity>
