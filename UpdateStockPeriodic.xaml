@@ -7,7 +7,7 @@
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>933.6,925.6</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>1227.2,925.6</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>UpdateStockPeriodic_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <scg:List x:TypeArguments="x:String" Capacity="23">
@@ -83,45 +83,80 @@
           <av:Size x:Key="ShapeSize">200,68.8</av:Size>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
-      <Sequence DisplayName="For each new record, Calculate" sap:VirtualizedContainerService.HintSize="740,674.4" sap2010:WorkflowViewState.IdRef="Sequence_4">
+      <Sequence DisplayName="For each new record, Calculate" sap:VirtualizedContainerService.HintSize="781.6,1096.8" sap2010:WorkflowViewState.IdRef="Sequence_4">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
-        <If Condition="[newHistoricalCount&gt; 0]" sap:VirtualizedContainerService.HintSize="698.4,581.6" sap2010:WorkflowViewState.IdRef="If_4">
+        <If Condition="[newHistoricalCount&gt; 0]" sap:VirtualizedContainerService.HintSize="740,1004" sap2010:WorkflowViewState.IdRef="If_4">
           <If.Then>
-            <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[dbHistoricalResultDT]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="424.8,432" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
-              <ui:ForEachRow.Body>
-                <ActivityAction x:TypeArguments="sd:DataRow">
-                  <ActivityAction.Argument>
-                    <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
-                  </ActivityAction.Argument>
-                  <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="375.2,283.2" sap2010:WorkflowViewState.IdRef="Sequence_3">
-                    <Sequence.Variables>
-                      <Variable x:TypeArguments="x:Double" Name="returnsOneDay" />
-                      <Variable x:TypeArguments="x:Double" Name="returnsOneMonth" />
-                    </Sequence.Variables>
-                    <sap:WorkflowViewStateService.ViewState>
-                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                      </scg:Dictionary>
-                    </sap:WorkflowViewStateService.ViewState>
-                    <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="333.6,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_9" Text="[&quot;Processing row: &quot; + (dbHistoricalResultDT.Rows.IndexOf(row)+1).ToString]" />
-                    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke CalculateReturns workflow" sap:VirtualizedContainerService.HintSize="333.6,88" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="CalculateStockReturns.xaml">
-                      <ui:InvokeWorkflowFile.Arguments>
-                        <InArgument x:TypeArguments="sd:DataRow" x:Key="in_rowHistorical">
-                          <mva:VisualBasicValue x:TypeArguments="sd:DataRow" ExpressionText="row" />
-                        </InArgument>
-                        <InArgument x:TypeArguments="ui:DatabaseConnection" x:Key="in_dbConn">
-                          <mva:VisualBasicValue x:TypeArguments="ui:DatabaseConnection" ExpressionText="in_dbConn" />
-                        </InArgument>
-                      </ui:InvokeWorkflowFile.Arguments>
-                    </ui:InvokeWorkflowFile>
-                  </Sequence>
-                </ActivityAction>
-              </ui:ForEachRow.Body>
-            </ui:ForEachRow>
+            <Sequence sap:VirtualizedContainerService.HintSize="466.4,854.4" sap2010:WorkflowViewState.IdRef="Sequence_5">
+              <Sequence.Variables>
+                <Variable x:TypeArguments="sd:DataTable" Name="ddbCountHistoricalDT" />
+                <Variable x:TypeArguments="x:Int32" Name="historicalLastID" />
+              </Sequence.Variables>
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" CommandType="Text" DataTable="[ddbCountHistoricalDT]" DisplayName="Execute Query" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="424.8,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_3" Sql="Select Count(*) from [Periodic]">
+                <ui:ExecuteQuery.Parameters>
+                  <scg:Dictionary x:TypeArguments="x:String, Argument" />
+                </ui:ExecuteQuery.Parameters>
+              </ui:ExecuteQuery>
+              <Assign sap:VirtualizedContainerService.HintSize="424.8,60" sap2010:WorkflowViewState.IdRef="Assign_6">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Int32">[historicalLastID]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32(ddbCountHistoricalDT.Rows(0)(0))]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[dbHistoricalResultDT]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="424.8,532" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+                <ui:ForEachRow.Body>
+                  <ActivityAction x:TypeArguments="sd:DataRow">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+                    </ActivityAction.Argument>
+                    <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="375.2,383.2" sap2010:WorkflowViewState.IdRef="Sequence_3">
+                      <Sequence.Variables>
+                        <Variable x:TypeArguments="x:Double" Name="returnsOneDay" />
+                        <Variable x:TypeArguments="x:Double" Name="returnsOneMonth" />
+                      </Sequence.Variables>
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="333.6,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_9" Text="[&quot;Processing row: &quot; + (dbHistoricalResultDT.Rows.IndexOf(row)+1).ToString]" />
+                      <Assign sap:VirtualizedContainerService.HintSize="333.6,60" sap2010:WorkflowViewState.IdRef="Assign_7">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Int32">[historicalLastID]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Int32">[historicalLastID + 1]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                      <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke CalculateReturns workflow" sap:VirtualizedContainerService.HintSize="333.6,88" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="CalculateStockReturns.xaml">
+                        <ui:InvokeWorkflowFile.Arguments>
+                          <InArgument x:TypeArguments="sd:DataRow" x:Key="in_rowHistorical">
+                            <mva:VisualBasicValue x:TypeArguments="sd:DataRow" ExpressionText="row" />
+                          </InArgument>
+                          <InArgument x:TypeArguments="ui:DatabaseConnection" x:Key="in_dbConn">
+                            <mva:VisualBasicValue x:TypeArguments="ui:DatabaseConnection" ExpressionText="in_dbConn" />
+                          </InArgument>
+                          <InArgument x:TypeArguments="x:Int32" x:Key="in_IdCount">
+                            <mva:VisualBasicValue x:TypeArguments="x:Int32" ExpressionText="historicalLastID" />
+                          </InArgument>
+                        </ui:InvokeWorkflowFile.Arguments>
+                      </ui:InvokeWorkflowFile>
+                    </Sequence>
+                  </ActivityAction>
+                </ui:ForEachRow.Body>
+              </ui:ForEachRow>
+            </Sequence>
           </If.Then>
           <If.Else>
             <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="229.6,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_10" Text="No newer historical records" />

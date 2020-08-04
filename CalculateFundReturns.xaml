@@ -5,11 +5,12 @@
     <x:Property Name="in_totalWeight" Type="InArgument(x:Double)" />
     <x:Property Name="in_holdingsDT" Type="InArgument(sd:DataTable)" />
     <x:Property Name="in_fundStockId" Type="InArgument(x:String)" />
+    <x:Property Name="in_IdCount" Type="InArgument(x:Int32)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>784,7433.6</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>1227.2,7433.6</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>CalculateFundReturns_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <scg:List x:TypeArguments="x:String" Capacity="24">
@@ -552,7 +553,7 @@
             <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="364.8,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_46" Text="[&quot;Adding Returns for HoldingStockId=&quot;+ stockId.ToString]" />
             <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="364.8,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_1">
               <ui:CommentOut.Body>
-                <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="660,1908.8" sap2010:WorkflowViewState.IdRef="Sequence_23">
+                <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="660,1252.8" sap2010:WorkflowViewState.IdRef="Sequence_23">
                   <sap:WorkflowViewStateService.ViewState>
                     <scg:Dictionary x:TypeArguments="x:String, x:Object">
                       <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -1037,13 +1038,14 @@ ReturnsAnnualised.ToString +"')"]</InArgument>
           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
-      <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="333.6,64" sap2010:WorkflowViewState.IdRef="WriteLine_45" Text="[&quot;FundStockId: &quot; + in_fundStockId + &#xD;&#xA;&quot;, TradeDate: &quot; + tradeDate + &#xD;&#xA;&quot;, 1 Day: &quot; + ReturnsOneDay.ToString + &#xD;&#xA;&quot;, 1 month: &quot; + ReturnsOneMonth.ToString + &#xD;&#xA;&quot;, 3 month: &quot; + ReturnsThreeMonth.ToString + &#xD;&#xA;&quot;, 6 month: &quot; + ReturnsSixMonth.ToString +&#xD;&#xA;&quot;, 1 Year: &quot; + ReturnsOneYear.ToString +&#xD;&#xA;&quot;, YTD: &quot; + ReturnsYearToDate.ToString + &#xD;&#xA;&quot;, Inception: &quot; + ReturnsSinceInception.ToString+&#xD;&#xA;&quot;, Annualised: &quot; + ReturnsAnnualised.ToString]" />
+      <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="333.6,64" sap2010:WorkflowViewState.IdRef="WriteLine_45" Text="[&quot;FundStockId: &quot; + in_fundStockId + &#xA;&quot;, TradeDate: &quot; + tradeDate + &#xA;&quot;, 1 Day: &quot; + ReturnsOneDay.ToString + &#xA;&quot;, 1 month: &quot; + ReturnsOneMonth.ToString + &#xA;&quot;, 3 month: &quot; + ReturnsThreeMonth.ToString + &#xA;&quot;, 6 month: &quot; + ReturnsSixMonth.ToString +&#xA;&quot;, 1 Year: &quot; + ReturnsOneYear.ToString +&#xA;&quot;, YTD: &quot; + ReturnsYearToDate.ToString + &#xA;&quot;, Inception: &quot; + ReturnsSinceInception.ToString+&#xA;&quot;, Annualised: &quot; + ReturnsAnnualised.ToString]" />
       <Assign sap:VirtualizedContainerService.HintSize="333.6,64" sap2010:WorkflowViewState.IdRef="Assign_96">
         <Assign.To>
           <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
         </Assign.To>
         <Assign.Value>
-          <InArgument x:TypeArguments="x:String" xml:space="preserve">["INSERT INTO [Periodic] (StockId, TradeDate, OneDay, OneMonth, ThreeMonth, SixMonth, OneYear, YearToDate, SinceInception, AnnualisedReturns) VALUES ('"+
+          <InArgument x:TypeArguments="x:String" xml:space="preserve">["INSERT INTO [Periodic] (Id, StockId, TradeDate, OneDay, OneMonth, ThreeMonth, SixMonth, OneYear, YearToDate, SinceInception, AnnualisedReturns) VALUES ('"+
+in_IdCount.ToString + "', '" + 
 in_fundStockId + "', '" + 
 tradeDate + "', '" + 
 ReturnsOneDay.ToString + "', '" + 

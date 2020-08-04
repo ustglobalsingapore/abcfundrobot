@@ -2,11 +2,12 @@
   <x:Members>
     <x:Property Name="in_rowHistorical" Type="InArgument(sd:DataRow)" />
     <x:Property Name="in_dbConn" Type="InArgument(ui:DatabaseConnection)" />
+    <x:Property Name="in_IdCount" Type="InArgument(x:Int32)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>852,6582.4</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>1227.2,6582.4</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>CalculateOneDay_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <scg:List x:TypeArguments="x:String" Capacity="24">
@@ -509,7 +510,8 @@
         <OutArgument x:TypeArguments="x:String">[dbQuery]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String" xml:space="preserve">["INSERT INTO [Periodic] (StockId, TradeDate, OneDay, OneMonth, ThreeMonth, SixMonth, OneYear, YearToDate, SinceInception, AnnualisedReturns) VALUES ('"+
+        <InArgument x:TypeArguments="x:String" xml:space="preserve">["INSERT INTO [Periodic] (Id, StockId, TradeDate, OneDay, OneMonth, ThreeMonth, SixMonth, OneYear, YearToDate, SinceInception, AnnualisedReturns) VALUES ('"+
+in_IdCount.ToString + "', '" + 
 stockId.ToString + "', '" + 
 stockTradeDate.ToString.Split(" "C)(0).ToString + "', '" + 
 ReturnsOneDay.ToString + "', '" + 
@@ -522,7 +524,7 @@ ReturnsSinceInception.ToString + "', '" +
 ReturnsAnnualised.ToString +"')"]</InArgument>
       </Assign.Value>
     </Assign>
-    <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="680,64" sap2010:WorkflowViewState.IdRef="WriteLine_11" Text="[&quot;StockId: &quot; + stockId + &#xD;&#xA;&quot;, TradeDate: &quot; + stockTradeDate.ToString.Split(&quot; &quot;C)(0).ToString + &#xD;&#xA;&quot;, 1 Day: &quot; + ReturnsOneDay.ToString + &#xD;&#xA;&quot;, 1 month: &quot; + ReturnsOneMonth.ToString + &#xD;&#xA;&quot;, 3 month: &quot; + ReturnsThreeMonth.ToString + &#xD;&#xA;&quot;, 6 month: &quot; + ReturnsSixMonth.ToString +&#xD;&#xA;&quot;, 1 Year: &quot; + ReturnsOneYear.ToString +&#xD;&#xA;&quot;, YTD: &quot; + ReturnsYearToDate.ToString + &#xD;&#xA;&quot;, Inception: &quot; + ReturnsSinceInception.ToString+&#xD;&#xA;&quot;, Annualised: &quot; + ReturnsAnnualised.ToString]" />
+    <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="680,64" sap2010:WorkflowViewState.IdRef="WriteLine_11" Text="[&quot;StockId: &quot; + stockId + &#xA;&quot;, TradeDate: &quot; + stockTradeDate.ToString.Split(&quot; &quot;C)(0).ToString + &#xA;&quot;, 1 Day: &quot; + ReturnsOneDay.ToString + &#xA;&quot;, 1 month: &quot; + ReturnsOneMonth.ToString + &#xA;&quot;, 3 month: &quot; + ReturnsThreeMonth.ToString + &#xA;&quot;, 6 month: &quot; + ReturnsSixMonth.ToString +&#xA;&quot;, 1 Year: &quot; + ReturnsOneYear.ToString +&#xA;&quot;, YTD: &quot; + ReturnsYearToDate.ToString + &#xA;&quot;, Inception: &quot; + ReturnsSinceInception.ToString+&#xA;&quot;, Annualised: &quot; + ReturnsAnnualised.ToString]" />
     <ui:ExecuteNonQuery AffectedRecords="{x:Null}" ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" CommandType="Text" DisplayName="Execute Non Query" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="680,89.6" sap2010:WorkflowViewState.IdRef="ExecuteNonQuery_1" Sql="[dbQuery]">
       <ui:ExecuteNonQuery.Parameters>
         <scg:Dictionary x:TypeArguments="x:String, Argument" />
