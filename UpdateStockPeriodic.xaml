@@ -2,11 +2,12 @@
   <x:Members>
     <x:Property Name="in_stockId" Type="InArgument(x:String)" />
     <x:Property Name="in_configDefaultDT" Type="InArgument(sd:DataTable)" />
+    <x:Property Name="in_dbConn" Type="InArgument(ui:DatabaseConnection)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>852,925.6</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>933.6,925.6</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>UpdateStockPeriodic_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <scg:List x:TypeArguments="x:String" Capacity="23">
@@ -58,7 +59,6 @@
   </TextExpression.ReferencesForImplementation>
   <Flowchart sap2010:Annotation.AnnotationText="Pre: in_stockId&#xA;&#xA;1. Get the last records of stock periodics.&#xA;2. Check if Historical has newer entries than stock's periodic by date.&#xA;3. For each new historical data, process calculations of each 1 day, 1 month, 3 month, 1 year, year to date, since inception and annualized returns.&#xA;3B. Save into periodics as new entry" DisplayName="UpdateStockPeriodic" sap:VirtualizedContainerService.HintSize="633.6,760.8" sap2010:WorkflowViewState.IdRef="Flowchart_1">
     <Flowchart.Variables>
-      <Variable x:TypeArguments="ui:DatabaseConnection" Name="dbConn" />
       <Variable x:TypeArguments="sd:DataTable" Name="dbPeriodicResultDT" />
       <Variable x:TypeArguments="x:String" Name="dbQuery" />
       <Variable x:TypeArguments="sd:DataTable" Name="dbHistoricalResultDT" />
@@ -74,14 +74,13 @@
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
     <Flowchart.StartNode>
-      <x:Reference>__ReferenceID2</x:Reference>
+      <x:Reference>__ReferenceID1</x:Reference>
     </Flowchart.StartNode>
     <FlowStep x:Name="__ReferenceID0">
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <av:Point x:Key="ShapeLocation">20,315.6</av:Point>
           <av:Size x:Key="ShapeSize">200,68.8</av:Size>
-          <av:PointCollection x:Key="ConnectorLocation">120,384.4 120,434.4</av:PointCollection>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
       <Sequence DisplayName="For each new record, Calculate" sap:VirtualizedContainerService.HintSize="740,674.4" sap2010:WorkflowViewState.IdRef="Sequence_4">
@@ -111,8 +110,12 @@
                     <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="333.6,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_9" Text="[&quot;Processing row: &quot; + (dbHistoricalResultDT.Rows.IndexOf(row)+1).ToString]" />
                     <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke CalculateReturns workflow" sap:VirtualizedContainerService.HintSize="333.6,88" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="CalculateStockReturns.xaml">
                       <ui:InvokeWorkflowFile.Arguments>
-                        <InArgument x:TypeArguments="sd:DataRow" x:Key="in_rowHistorical">[row]</InArgument>
-                        <InArgument x:TypeArguments="ui:DatabaseConnection" x:Key="in_dbConn">[dbConn]</InArgument>
+                        <InArgument x:TypeArguments="sd:DataRow" x:Key="in_rowHistorical">
+                          <mva:VisualBasicValue x:TypeArguments="sd:DataRow" ExpressionText="row" />
+                        </InArgument>
+                        <InArgument x:TypeArguments="ui:DatabaseConnection" x:Key="in_dbConn">
+                          <mva:VisualBasicValue x:TypeArguments="ui:DatabaseConnection" ExpressionText="in_dbConn" />
+                        </InArgument>
                       </ui:InvokeWorkflowFile.Arguments>
                     </ui:InvokeWorkflowFile>
                   </Sequence>
@@ -125,25 +128,8 @@
           </If.Else>
         </If>
       </Sequence>
-      <FlowStep.Next>
-        <FlowStep x:Name="__ReferenceID1">
-          <sap:WorkflowViewStateService.ViewState>
-            <scg:Dictionary x:TypeArguments="x:String, x:Object">
-              <av:Point x:Key="ShapeLocation">20,434.4</av:Point>
-              <av:Size x:Key="ShapeSize">200,22.4</av:Size>
-            </scg:Dictionary>
-          </sap:WorkflowViewStateService.ViewState>
-          <ui:DatabaseDisconnect DatabaseConnection="[dbConn]" DisplayName="Disconnect" sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="DatabaseDisconnect_1">
-            <sap:WorkflowViewStateService.ViewState>
-              <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-              </scg:Dictionary>
-            </sap:WorkflowViewStateService.ViewState>
-          </ui:DatabaseDisconnect>
-        </FlowStep>
-      </FlowStep.Next>
     </FlowStep>
-    <FlowStep x:Name="__ReferenceID2">
+    <FlowStep x:Name="__ReferenceID1">
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <av:Point x:Key="ShapeLocation">20,65.6</av:Point>
@@ -152,10 +138,6 @@
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
       <Sequence sap2010:Annotation.AnnotationText="1. Init values&#xA;2. Read Periodics database&#xA;3. Read Hisotrical database for entries newer than periodics" DisplayName="Init and Read Both Database" sap:VirtualizedContainerService.HintSize="200,160.8" sap2010:WorkflowViewState.IdRef="Sequence_2">
-        <Sequence.Variables>
-          <Variable x:TypeArguments="x:String" Name="sqlConnectionString" />
-          <Variable x:TypeArguments="x:String" Name="providerName" />
-        </Sequence.Variables>
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -163,22 +145,6 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
         <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="648.8,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Calculate periodics for stockid=&quot; + in_stockId]" />
-        <Assign sap:VirtualizedContainerService.HintSize="648.8,60" sap2010:WorkflowViewState.IdRef="Assign_3">
-          <Assign.To>
-            <OutArgument x:TypeArguments="x:String">[sqlConnectionString]</OutArgument>
-          </Assign.To>
-          <Assign.Value>
-            <InArgument x:TypeArguments="x:String">[in_configDefaultDT.Select("Fields='sqlConnectionString'")(0)(1).ToString]</InArgument>
-          </Assign.Value>
-        </Assign>
-        <Assign sap:VirtualizedContainerService.HintSize="648.8,60" sap2010:WorkflowViewState.IdRef="Assign_4">
-          <Assign.To>
-            <OutArgument x:TypeArguments="x:String">[providerName]</OutArgument>
-          </Assign.To>
-          <Assign.Value>
-            <InArgument x:TypeArguments="x:String">[in_configDefaultDT.Select("Fields='providerName'")(0)(1).ToString]</InArgument>
-          </Assign.Value>
-        </Assign>
         <Assign sap:VirtualizedContainerService.HintSize="648.8,60" sap2010:WorkflowViewState.IdRef="Assign_1">
           <Assign.To>
             <OutArgument x:TypeArguments="x:String">[dbQuery]</OutArgument>
@@ -187,8 +153,7 @@
             <InArgument x:TypeArguments="x:String">["SELECT TOP 1 * FROM [Periodic] WHERE StockId='"+in_stockId+ "' ORDER BY TradeDate DESC"]</InArgument>
           </Assign.Value>
         </Assign>
-        <ui:DatabaseConnect DatabaseConnection="[dbConn]" DisplayName="Connect Local" sap:VirtualizedContainerService.HintSize="648.8,60" sap2010:WorkflowViewState.IdRef="DatabaseConnect_1" ProviderName="[providerName]" ConnectionString="[sqlConnectionString]" />
-        <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" CommandType="Text" DataTable="[dbPeriodicResultDT]" DisplayName="Get lastest Periodic" ExistingDbConnection="[dbConn]" sap:VirtualizedContainerService.HintSize="648.8,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_1" Sql="[dbQuery]">
+        <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" CommandType="Text" DataTable="[dbPeriodicResultDT]" DisplayName="Get lastest Periodic" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="648.8,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_1" Sql="[dbQuery]">
           <ui:ExecuteQuery.Parameters>
             <scg:Dictionary x:TypeArguments="x:String, Argument" />
           </ui:ExecuteQuery.Parameters>
@@ -211,7 +176,7 @@
 "' and TradeDate &gt; '" + dbPeriodicResultDT.Rows(0)(2).ToString+"'"]</InArgument>
                 </Assign.Value>
               </Assign>
-              <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="" CommandType="Text" DataTable="[dbHistoricalResultDT]" DisplayName="Get all historical &gt; periodic date" ExistingDbConnection="[dbConn]" sap:VirtualizedContainerService.HintSize="333.6,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_2" Sql="[dbQuery]">
+              <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="" CommandType="Text" DataTable="[dbHistoricalResultDT]" DisplayName="Get all historical &gt; periodic date" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="333.6,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_2" Sql="[dbQuery]">
                 <ui:ExecuteQuery.Parameters>
                   <scg:Dictionary x:TypeArguments="x:String, Argument" />
                 </ui:ExecuteQuery.Parameters>
@@ -240,6 +205,5 @@
         <x:Reference>__ReferenceID0</x:Reference>
       </FlowStep.Next>
     </FlowStep>
-    <x:Reference>__ReferenceID1</x:Reference>
   </Flowchart>
 </Activity>
