@@ -10,7 +10,7 @@
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>1200.8,923.2</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>623.2,963.2</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>UpdateStockHistory_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <scg:List x:TypeArguments="x:String" Capacity="26">
@@ -89,9 +89,9 @@
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
     <Flowchart.StartNode>
-      <x:Reference>__ReferenceID2</x:Reference>
+      <x:Reference>__ReferenceID3</x:Reference>
     </Flowchart.StartNode>
-    <FlowStep>
+    <FlowStep x:Name="__ReferenceID0">
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <av:Point x:Key="ShapeLocation">20,243.5</av:Point>
@@ -163,7 +163,7 @@
         </ui:OpenBrowser>
       </Sequence>
       <FlowStep.Next>
-        <FlowStep x:Name="__ReferenceID0">
+        <FlowStep x:Name="__ReferenceID1">
           <sap:WorkflowViewStateService.ViewState>
             <scg:Dictionary x:TypeArguments="x:String, x:Object">
               <av:Point x:Key="ShapeLocation">340,203.5</av:Point>
@@ -184,14 +184,14 @@
             <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="333.6,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_5" Text="[&quot;Number of datas: &quot; + tempHistoricalDT.Rows.Count.ToString]" />
           </Sequence>
           <FlowStep.Next>
-            <FlowStep x:Name="__ReferenceID1">
+            <FlowStep x:Name="__ReferenceID2">
               <sap:WorkflowViewStateService.ViewState>
                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
                   <av:Point x:Key="ShapeLocation">340,369.6</av:Point>
                   <av:Size x:Key="ShapeSize">200,320.8</av:Size>
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
-              <Sequence sap2010:Annotation.AnnotationText="Pre: &#xA;- Database Package must be installed.&#xA;- Uipathteam.DateTime Package must be installed.&#xA;&#xA;1. Check from the last records of tempDataTable from csv reading against the sql database.&#xA;2. if records don't exist in db, then prepare to add these new records.&#xA;3. * Bonus. Can update the permanant excel as well." DisplayName="Check against Database" sap:VirtualizedContainerService.HintSize="1008.8,4001.6" sap2010:WorkflowViewState.IdRef="Sequence_8">
+              <Sequence sap2010:Annotation.AnnotationText="Pre: &#xA;- Database Package must be installed.&#xA;- Uipathteam.DateTime Package must be installed.&#xA;&#xA;1. Check from the last records of tempDataTable from csv reading against the sql database.&#xA;2. if records don't exist in db, then prepare to add these new records.&#xA;3. * Bonus. Can update the permanant excel as well." DisplayName="Check against Database" sap:VirtualizedContainerService.HintSize="200,320.8" sap2010:WorkflowViewState.IdRef="Sequence_8">
                 <Sequence.Variables>
                   <Variable x:TypeArguments="sd:DataTable" Name="dbResultDT" />
                   <Variable x:TypeArguments="x:Double" Name="double_daysDiff" />
@@ -470,12 +470,12 @@ row(6).ToString +"')"]</InArgument>
         </FlowStep>
       </FlowStep.Next>
     </FlowStep>
-    <FlowStep x:Name="__ReferenceID2">
+    <FlowStep x:Name="__ReferenceID3">
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <av:Point x:Key="ShapeLocation">20,28.5</av:Point>
           <av:Size x:Key="ShapeSize">200,192.8</av:Size>
-          <av:PointCollection x:Key="ConnectorLocation">120,221.3 120,251.3 0,251.3 0,11.3 440,11.3 440,203.5</av:PointCollection>
+          <av:PointCollection x:Key="ConnectorLocation">120,221.3 120,243.5</av:PointCollection>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
       <Sequence sap2010:Annotation.AnnotationText="Initialized the variables stockUrl, csvPath, csvTempPath. &#xA;&#xA;These should come from the data row passed in from init file" DisplayName="Init and assignment" sap:VirtualizedContainerService.HintSize="200,192.8" sap2010:WorkflowViewState.IdRef="Sequence_1">
@@ -523,7 +523,7 @@ row(6).ToString +"')"]</InArgument>
         <x:Reference>__ReferenceID0</x:Reference>
       </FlowStep.Next>
     </FlowStep>
-    <x:Reference>__ReferenceID0</x:Reference>
     <x:Reference>__ReferenceID1</x:Reference>
+    <x:Reference>__ReferenceID2</x:Reference>
   </Flowchart>
 </Activity>
