@@ -8,7 +8,7 @@
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>1227.2,981.6</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>800.8,941.6</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>UpdateStockPeriodic_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <scg:List x:TypeArguments="x:String" Capacity="23">
@@ -154,24 +154,12 @@
                       </Assign>
                       <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Invoke CalculateFundReturns workflow" sap:VirtualizedContainerService.HintSize="333.6,88" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_5" UnSafe="False" WorkflowFileName="CalculateFundReturns.xaml">
                         <ui:InvokeWorkflowFile.Arguments>
-                          <InArgument x:TypeArguments="ui:DatabaseConnection" x:Key="in_dbConn">
-                            <mva:VisualBasicValue x:TypeArguments="ui:DatabaseConnection" ExpressionText="in_dbConn" />
-                          </InArgument>
-                          <InArgument x:TypeArguments="sd:DataRow" x:Key="in_benchmarkRow">
-                            <mva:VisualBasicValue x:TypeArguments="sd:DataRow" ExpressionText="row" />
-                          </InArgument>
-                          <InArgument x:TypeArguments="x:Double" x:Key="in_totalWeight">
-                            <mva:VisualBasicValue x:TypeArguments="x:Double" ExpressionText="totalWeight" />
-                          </InArgument>
-                          <InArgument x:TypeArguments="sd:DataTable" x:Key="in_holdingsDT">
-                            <mva:VisualBasicValue x:TypeArguments="sd:DataTable" ExpressionText="dbHoldingIdDT" />
-                          </InArgument>
-                          <InArgument x:TypeArguments="x:String" x:Key="in_fundStockId">
-                            <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="fundStockId" />
-                          </InArgument>
-                          <InArgument x:TypeArguments="x:Int32" x:Key="in_IdCount">
-                            <mva:VisualBasicValue x:TypeArguments="x:Int32" ExpressionText="historicalLastID" />
-                          </InArgument>
+                          <InArgument x:TypeArguments="ui:DatabaseConnection" x:Key="in_dbConn">[in_dbConn]</InArgument>
+                          <InArgument x:TypeArguments="sd:DataRow" x:Key="in_benchmarkRow">[row]</InArgument>
+                          <InArgument x:TypeArguments="x:Double" x:Key="in_totalWeight">[totalWeight]</InArgument>
+                          <InArgument x:TypeArguments="sd:DataTable" x:Key="in_holdingsDT">[dbHoldingIdDT]</InArgument>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_fundStockId">[fundStockId]</InArgument>
+                          <InArgument x:TypeArguments="x:Int32" x:Key="in_IdCount">[historicalLastID]</InArgument>
                         </ui:InvokeWorkflowFile.Arguments>
                       </ui:InvokeWorkflowFile>
                     </Sequence>
@@ -209,15 +197,15 @@
           <av:PointCollection x:Key="ConnectorLocation">120,258.4 120,295.6</av:PointCollection>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
-      <Sequence sap2010:Annotation.AnnotationText="1. Init values&#xA;2. Read Periodics database's last entry's date&#xA;3. Read Benchmark for newer entries&#xA;3. Read Holdings for all stocks under the holding" DisplayName="Init and Get 2 DatabaseTables" sap:VirtualizedContainerService.HintSize="200,192.8" sap2010:WorkflowViewState.IdRef="Sequence_2">
+      <Sequence sap2010:Annotation.AnnotationText="1. Init values&#xA;2. Read Periodics database's last entry's date&#xA;3. Read Benchmark for newer entries&#xA;3. Read Holdings for all stocks under the holding" DisplayName="Init and Get 2 DatabaseTables" sap:VirtualizedContainerService.HintSize="1132.8,2798.4" sap2010:WorkflowViewState.IdRef="Sequence_2">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
             <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
-        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="723.2,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Init UpdateFunderiodics for stockid=&quot; + in_stockId]" />
-        <Assign sap:VirtualizedContainerService.HintSize="723.2,60" sap2010:WorkflowViewState.IdRef="Assign_46">
+        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="1091.2,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Init UpdateFunderiodics for stockid=&quot; + in_stockId]" />
+        <Assign sap:VirtualizedContainerService.HintSize="1091.2,60" sap2010:WorkflowViewState.IdRef="Assign_46">
           <Assign.To>
             <OutArgument x:TypeArguments="sd:DataTable">[fundDT]</OutArgument>
           </Assign.To>
@@ -225,7 +213,7 @@
             <InArgument x:TypeArguments="sd:DataTable">[in_fundDT.Select("[StockId]='"+in_stockId+"'").CopyToDataTable]</InArgument>
           </Assign.Value>
         </Assign>
-        <Assign sap:VirtualizedContainerService.HintSize="723.2,60" sap2010:WorkflowViewState.IdRef="Assign_47">
+        <Assign sap:VirtualizedContainerService.HintSize="1091.2,60" sap2010:WorkflowViewState.IdRef="Assign_47">
           <Assign.To>
             <OutArgument x:TypeArguments="x:String">[fundId]</OutArgument>
           </Assign.To>
@@ -233,7 +221,7 @@
             <InArgument x:TypeArguments="x:String">[fundDT.Rows(0)(2).ToString]</InArgument>
           </Assign.Value>
         </Assign>
-        <Assign sap:VirtualizedContainerService.HintSize="723.2,60" sap2010:WorkflowViewState.IdRef="Assign_48">
+        <Assign sap:VirtualizedContainerService.HintSize="1091.2,60" sap2010:WorkflowViewState.IdRef="Assign_48">
           <Assign.To>
             <OutArgument x:TypeArguments="x:String">[benchmarkId]</OutArgument>
           </Assign.To>
@@ -241,7 +229,7 @@
             <InArgument x:TypeArguments="x:String">[fundDT.Rows(0)(1).ToString]</InArgument>
           </Assign.Value>
         </Assign>
-        <Assign sap:VirtualizedContainerService.HintSize="723.2,60" sap2010:WorkflowViewState.IdRef="Assign_28">
+        <Assign sap:VirtualizedContainerService.HintSize="1091.2,60" sap2010:WorkflowViewState.IdRef="Assign_28">
           <Assign.To>
             <OutArgument x:TypeArguments="x:String">[fundStockId]</OutArgument>
           </Assign.To>
@@ -249,7 +237,7 @@
             <InArgument x:TypeArguments="x:String">[in_stockId.ToString]</InArgument>
           </Assign.Value>
         </Assign>
-        <Assign sap:VirtualizedContainerService.HintSize="723.2,60" sap2010:WorkflowViewState.IdRef="Assign_51">
+        <Assign sap:VirtualizedContainerService.HintSize="1091.2,60" sap2010:WorkflowViewState.IdRef="Assign_51">
           <Assign.To>
             <OutArgument x:TypeArguments="x:Double">[totalWeight]</OutArgument>
           </Assign.To>
@@ -257,7 +245,7 @@
             <InArgument x:TypeArguments="x:Double">0</InArgument>
           </Assign.Value>
         </Assign>
-        <Assign sap:VirtualizedContainerService.HintSize="723.2,60" sap2010:WorkflowViewState.IdRef="Assign_6">
+        <Assign sap:VirtualizedContainerService.HintSize="1091.2,60" sap2010:WorkflowViewState.IdRef="Assign_6">
           <Assign.To>
             <OutArgument x:TypeArguments="x:Boolean">[stopProcess]</OutArgument>
           </Assign.To>
@@ -265,7 +253,7 @@
             <InArgument x:TypeArguments="x:Boolean">False</InArgument>
           </Assign.Value>
         </Assign>
-        <Assign DisplayName="Fund Periodic Query" sap:VirtualizedContainerService.HintSize="723.2,60" sap2010:WorkflowViewState.IdRef="Assign_1">
+        <Assign DisplayName="Fund Periodic Query" sap:VirtualizedContainerService.HintSize="1091.2,60" sap2010:WorkflowViewState.IdRef="Assign_1">
           <Assign.To>
             <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
           </Assign.To>
@@ -273,12 +261,12 @@
             <InArgument x:TypeArguments="x:String">["SELECT TOP 1 * FROM [Periodic] WHERE StockId='"+fundStockId+ "' ORDER BY TradeDate DESC"]</InArgument>
           </Assign.Value>
         </Assign>
-        <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" CommandType="Text" DataTable="[dbFundLastPeriodicDT]" DisplayName="Get latest Fund Periodic" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="723.2,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_1" Sql="[sqlQuery]">
+        <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" CommandType="Text" DataTable="[dbFundLastPeriodicDT]" DisplayName="Get latest Fund Periodic" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="1091.2,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_1" Sql="[sqlQuery]">
           <ui:ExecuteQuery.Parameters>
             <scg:Dictionary x:TypeArguments="x:String, Argument" />
           </ui:ExecuteQuery.Parameters>
         </ui:ExecuteQuery>
-        <If Condition="[dbFundLastPeriodicDT.Rows.Count &gt; 0]" DisplayName="If valid Fund Periodic, Benchmark newer Historical data" sap:VirtualizedContainerService.HintSize="723.2,632" sap2010:WorkflowViewState.IdRef="If_14">
+        <If Condition="[dbFundLastPeriodicDT.Rows.Count &gt; 0]" DisplayName="If valid Fund Periodic, Benchmark newer Historical data" sap:VirtualizedContainerService.HintSize="1091.2,632" sap2010:WorkflowViewState.IdRef="If_14">
           <If.Then>
             <Sequence sap:VirtualizedContainerService.HintSize="375.2,482.4" sap2010:WorkflowViewState.IdRef="Sequence_31">
               <sap:WorkflowViewStateService.ViewState>
@@ -336,15 +324,15 @@
             </Sequence>
           </If.Else>
         </If>
-        <If Condition="[newerBenchmarkCount&gt;0 and stopProcess = False]" DisplayName="If benchmark has newer entries, Get Holdings" sap:VirtualizedContainerService.HintSize="723.2,432" sap2010:WorkflowViewState.IdRef="If_15">
+        <If Condition="[newerBenchmarkCount&gt;0 and stopProcess = False]" DisplayName="If benchmark has newer entries, Get Holdings" sap:VirtualizedContainerService.HintSize="1091.2,923.2" sap2010:WorkflowViewState.IdRef="If_15">
           <If.Then>
-            <Sequence sap:VirtualizedContainerService.HintSize="375.2,282.4" sap2010:WorkflowViewState.IdRef="Sequence_35">
+            <Sequence sap:VirtualizedContainerService.HintSize="743.2,773.6" sap2010:WorkflowViewState.IdRef="Sequence_35">
               <sap:WorkflowViewStateService.ViewState>
                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
-              <Assign sap:VirtualizedContainerService.HintSize="333.6,60" sap2010:WorkflowViewState.IdRef="Assign_11">
+              <Assign sap:VirtualizedContainerService.HintSize="701.6,60" sap2010:WorkflowViewState.IdRef="Assign_11">
                 <Assign.To>
                   <OutArgument x:TypeArguments="x:String">[sqlQuery]</OutArgument>
                 </Assign.To>
@@ -352,7 +340,7 @@
                   <InArgument x:TypeArguments="x:String">["SELECT DISTINCT [StockId], [Weight] FROM Holding WHERE FundId ='"+fundId + "'"]</InArgument>
                 </Assign.Value>
               </Assign>
-              <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="" CommandType="Text" DataTable="[dbHoldingIdDT]" DisplayName="Get FundId" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="333.6,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_5" Sql="[sqlQuery]">
+              <ui:ExecuteQuery ContinueOnError="{x:Null}" TimeoutMS="{x:Null}" sap2010:Annotation.AnnotationText="" CommandType="Text" DataTable="[dbHoldingIdDT]" DisplayName="Get FundId" ExistingDbConnection="[in_dbConn]" sap:VirtualizedContainerService.HintSize="701.6,89.6" sap2010:WorkflowViewState.IdRef="ExecuteQuery_5" Sql="[sqlQuery]">
                 <ui:ExecuteQuery.Parameters>
                   <scg:Dictionary x:TypeArguments="x:String, Argument" />
                 </ui:ExecuteQuery.Parameters>
@@ -362,6 +350,52 @@
                   </scg:Dictionary>
                 </sap:WorkflowViewStateService.ViewState>
               </ui:ExecuteQuery>
+              <If Condition="[dbHoldingIdDT.Rows.Count &gt; 0 and stopProcess = False]" DisplayName="If valid Holdings" sap:VirtualizedContainerService.HintSize="701.6,451.2" sap2010:WorkflowViewState.IdRef="If_8">
+                <If.Then>
+                  <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[dbHoldingIdDT]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="353.6,301.6" sap2010:WorkflowViewState.IdRef="ForEachRow_4">
+                    <ui:ForEachRow.Body>
+                      <ActivityAction x:TypeArguments="sd:DataRow">
+                        <ActivityAction.Argument>
+                          <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+                        </ActivityAction.Argument>
+                        <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="304,152.8" sap2010:WorkflowViewState.IdRef="Sequence_15">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_19">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:Double">[totalWeight]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:Double">[totalWeight + Convert.ToDouble(row(1).ToString)]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                        </Sequence>
+                      </ActivityAction>
+                    </ui:ForEachRow.Body>
+                  </ui:ForEachRow>
+                </If.Then>
+                <If.Else>
+                  <Sequence sap:VirtualizedContainerService.HintSize="304,255.2" sap2010:WorkflowViewState.IdRef="Sequence_16">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_20">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:Boolean">[stopProcess]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:Boolean">True</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="262.4,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_14" Text="No holdings found, stopProcess..." />
+                  </Sequence>
+                </If.Else>
+              </If>
             </Sequence>
           </If.Then>
           <If.Else>
@@ -383,53 +417,7 @@
             </Sequence>
           </If.Else>
         </If>
-        <If Condition="[dbHoldingIdDT.Rows.Count &gt; 0 and stopProcess = False]" DisplayName="If valid Holdings" sap:VirtualizedContainerService.HintSize="723.2,451.2" sap2010:WorkflowViewState.IdRef="If_8">
-          <If.Then>
-            <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[dbHoldingIdDT]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="353.6,301.6" sap2010:WorkflowViewState.IdRef="ForEachRow_4">
-              <ui:ForEachRow.Body>
-                <ActivityAction x:TypeArguments="sd:DataRow">
-                  <ActivityAction.Argument>
-                    <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
-                  </ActivityAction.Argument>
-                  <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="304,152.8" sap2010:WorkflowViewState.IdRef="Sequence_15">
-                    <sap:WorkflowViewStateService.ViewState>
-                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                      </scg:Dictionary>
-                    </sap:WorkflowViewStateService.ViewState>
-                    <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_19">
-                      <Assign.To>
-                        <OutArgument x:TypeArguments="x:Double">[totalWeight]</OutArgument>
-                      </Assign.To>
-                      <Assign.Value>
-                        <InArgument x:TypeArguments="x:Double">[totalWeight + Convert.ToDouble(row(1).ToString)]</InArgument>
-                      </Assign.Value>
-                    </Assign>
-                  </Sequence>
-                </ActivityAction>
-              </ui:ForEachRow.Body>
-            </ui:ForEachRow>
-          </If.Then>
-          <If.Else>
-            <Sequence sap:VirtualizedContainerService.HintSize="304,255.2" sap2010:WorkflowViewState.IdRef="Sequence_16">
-              <sap:WorkflowViewStateService.ViewState>
-                <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                </scg:Dictionary>
-              </sap:WorkflowViewStateService.ViewState>
-              <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_20">
-                <Assign.To>
-                  <OutArgument x:TypeArguments="x:Boolean">[stopProcess]</OutArgument>
-                </Assign.To>
-                <Assign.Value>
-                  <InArgument x:TypeArguments="x:Boolean">True</InArgument>
-                </Assign.Value>
-              </Assign>
-              <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="262.4,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_14" Text="No holdings found, stopProcess..." />
-            </Sequence>
-          </If.Else>
-        </If>
-        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="723.2,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_25" Text="[&quot;New Benchmark entries: &quot; + newerBenchmarkCount.ToString]" />
+        <WriteLine DisplayName="Write Line" sap:VirtualizedContainerService.HintSize="1091.2,62.4" sap2010:WorkflowViewState.IdRef="WriteLine_25" Text="[&quot;New Benchmark entries: &quot; + newerBenchmarkCount.ToString]" />
       </Sequence>
       <FlowStep.Next>
         <x:Reference>__ReferenceID0</x:Reference>
